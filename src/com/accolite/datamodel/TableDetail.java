@@ -51,5 +51,10 @@ public class TableDetail implements Serializable {
 	public void setSequenceName(String sequenceName) {
 		this.sequenceName = sequenceName;
 	}
-	
+	@Override
+	public String toString() {
+		return "TableDetail [tableName=" + tableName + ", packageName=" + packageName + ", className=" + className
+				+ ", superClassName=" + superClassName + ", columns=" + columns + ", sequenceName=" + sequenceName
+				+ "]";
+	}
 }

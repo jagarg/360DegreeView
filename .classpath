@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/orientdb-graphdb-2.2.13.jar"/>
 	<classpathentry kind="lib" path="lib/orientdb-core-2.2.13.jar" sourcepath="C:/Users/Himanshu/.m2/repository/com/orientechnologies/orientdb-core/2.2.13/orientdb-core-2.2.13-sources.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/ojdbc6-11.1.0.7.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -66,5 +66,11 @@ public class ColumnDetail implements Serializable {
 	public void setForeignKeyColumn(String foreignKeyColumn) {
 		this.foreignKeyColumn = foreignKeyColumn;
 	}
-	
+	@Override
+	public String toString() {
+		return "ColumnDetail [columnName=" + columnName + ", primaryKey=" + primaryKey + ", foreignKey=" + foreignKey
+				+ ", localFieldName=" + localFieldName + ", foreignFieldName=" + foreignFieldName + ", foreignKeyClass="
+				+ foreignKeyClass + ", foreignKeyTable=" + foreignKeyTable + ", foreignKeyColumn=" + foreignKeyColumn
+				+ "]";
+	}	
 }
