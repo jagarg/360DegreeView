@@ -22,7 +22,7 @@ public class OrientMain {
     	System.out.println(url.getPath());
     	logger.info(" Serialized file : " + url.getPath());
     	
-    	try(FileInputStream fileIn = new FileInputStream(url.getPath());
+    	try(FileInputStream fileIn = new FileInputStream(url.getPath().replaceAll("%20", " "));
     		ObjectInputStream in = new ObjectInputStream(fileIn)) 
     	{
     		model = (Model)in.readObject();
