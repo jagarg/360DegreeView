@@ -9,7 +9,12 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Map.Entry;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import com.accolite.datamodel.ColumnDetail;
 import com.accolite.datamodel.Model;
@@ -17,19 +22,27 @@ import com.accolite.datamodel.TableDetail;
 import com.accolite.parsers.JdoXmlParser;
 
 public class DRVisualization {
+	static Model model = new Model();
+	static ArrayList<File> unProcessedFiles = new ArrayList<File>();
+	//static String unJarPath="C:/Users/hsareen/Desktop/Jay/unjar";
+	static String unJarPath = "C:/dev/gc/submodules/pacific-commerce/src/main/java/com/digitalriver";
+	
 	
 	public static void main(String[] a){
-		Model model = new Model();
-		/*
-		String path = "C:/dev/gc/submodules/pacific-commerce/src/main/java/com/digitalriver";
 		
+		String jarPath = "C:/dev/gc/submodules/runtime/lib/common";
+		
+		//extractJarFiles(jarPath);
 		
 		ArrayList<String> files = new ArrayList<String>();
-		listOfFiles(path, files);
+		listOfFiles(unJarPath, files);
+		
+		//list of Jdo files from jar
+		//listOfFilesFromJar(jarPath,files);
 		
 		//Process the JDO files
 		for(String file : files)
-			 JdoXmlParser.ParseJdoXml(file,model);
+			 JdoXmlParser.ParseJdoXml(file,model,unProcessedFiles);
 		
 		//Enrich the model
 		try {
@@ -53,7 +66,7 @@ public class DRVisualization {
 	     }
 		
 		model=null;
-		*/
+		
 		 //Deserializing the model
 		try {
 	         FileInputStream fileIn = new FileInputStream("src\\model.ser");
@@ -80,6 +93,83 @@ public class DRVisualization {
 	        } else if (file.isDirectory()) {
 	        	listOfFiles(file.getAbsolutePath(), files);
 	        }
+	    }
+	}
+	
+	public static void listOfFilesFromJar(String directoryName, ArrayList<String> files) {
+	    File directory = new File(directoryName);
+
+	    // get all the files from a directory
+	    File[] fList = directory.listFiles();
+	    for (File fileName : fList) {
+	        if (fileName.isFile()  && fileName.getName().endsWith("jar")) {
+	        	try {
+					@SuppressWarnings("resource")
+					JarFile jar = new JarFile(fileName);
+					Enumeration<JarEntry> entries = jar.entries();
+					 while (entries.hasMoreElements()){
+						 JarEntry entry = entries.nextElement();
+						 if(!entry.isDirectory() && entry.getName().endsWith("jdo"))
+						 {
+							 ClassLoader classLoader = Class.forName("com.accolite.DRVisualization").getClassLoader();
+							   File file = new File(classLoader.getResource(entry.getName()).toString().substring(entry.getName().lastIndexOf("jar")+1));
+							   JdoXmlParser.ParseJdoXml(file,model,unProcessedFiles);
+						 }
+					 }
+				} catch (IOException | ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+	            //files.add(file.getAbsolutePath());
+	        } else if (fileName.isDirectory()) {
+	        	listOfFiles(fileName.getAbsolutePath(), files);
+	        }
+	    }
+	}
+	
+	public static void extractJarFiles(String jarPath){
+		File directory = new File(jarPath);
+	    // get all the files from a directory
+	    File[] fList = directory.listFiles();
+	    for (File fileName : fList) {
+	        if (fileName.isFile()  && fileName.getName().endsWith("jar")) {
+	        	try {
+					@SuppressWarnings("resource")
+					JarFile jar = new JarFile(fileName);
+					File unJarDirectory = new File(unJarPath+"/"+ fileName.toString().substring(fileName.toString().lastIndexOf("\\")).replaceAll(".jar",""));
+					if(!unJarDirectory.exists())
+						unJarDirectory.mkdir();
+					Enumeration<JarEntry> entries = jar.entries();
+					 while (entries.hasMoreElements()){
+						 JarEntry entry = entries.nextElement();
+						 if(!entry.getName().contains(".jdo"))
+							 continue;
+						 java.io.File fl = new java.io.File(unJarDirectory, entry.getName());
+					        if(!fl.exists())
+					        {
+					            fl.getParentFile().mkdirs();
+					            fl = new java.io.File(unJarDirectory, entry.getName());
+					        }
+					        if(entry.isDirectory())
+					        {
+					            continue;
+					        }
+					        java.io.InputStream is = jar.getInputStream(entry);
+					        java.io.FileOutputStream fo = new java.io.FileOutputStream(fl);
+					        while(is.available()>0)
+					        {
+					            fo.write(is.read());
+					        }
+					        fo.close();
+					        is.close();
+						 
+					 }
+					 //delete empty directory
+					 if(unJarDirectory.list().length == 0)
+							unJarDirectory.delete();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        } 
 	    }
 	}
 	
