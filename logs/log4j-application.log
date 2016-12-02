@@ -1,0 +1,27 @@
+2016-12-02 13:38:30 INFO  OrientMain:23 -  Serialized file : /D:/DR/jdo/DR_Visualizer/target/classes/model.ser
+2016-12-02 13:38:31 INFO  OrientMain:29 -  De-Serialization complete
+2016-12-02 13:38:33 INFO  OrientLoader:108 - ======================================= 
+2016-12-02 13:38:33 INFO  OrientLoader:109 - 
+ Dropping Class .. 
+2016-12-02 13:38:36 DEBUG OrientLoader:75 - 
+Execute : DROP CLASS TABLE IF EXISTS UNSAFE
+2016-12-02 13:38:36 DEBUG OrientLoader:78 - 
+Return : true
+2016-12-02 13:38:36 DEBUG OrientLoader:75 - 
+Execute : DROP CLASS COLUMN IF EXISTS UNSAFE
+2016-12-02 13:38:36 DEBUG OrientLoader:78 - 
+Return : true
+2016-12-02 13:38:36 DEBUG OrientLoader:75 - 
+Execute : DROP CLASS hasColumn IF EXISTS UNSAFE
+2016-12-02 13:38:36 DEBUG OrientLoader:78 - 
+Return : true
+2016-12-02 13:38:36 DEBUG OrientLoader:75 - 
+Execute : DROP CLASS isForeignKey IF EXISTS UNSAFE
+2016-12-02 13:38:36 DEBUG OrientLoader:78 - 
+Return : true
+2016-12-02 13:38:36 INFO  OrientLoader:126 - 
+ Dropping Class Completed !!! 
+2016-12-02 13:38:36 INFO  OrientLoader:127 - 
+=======================================
+
+

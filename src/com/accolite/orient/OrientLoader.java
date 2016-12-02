@@ -10,6 +10,7 @@ import com.accolite.datamodel.ColumnDetail;
 import com.accolite.datamodel.Model;
 import com.accolite.datamodel.TableDetail;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
@@ -22,6 +23,7 @@ public class OrientLoader {
 	//private static String DATABASE = "plocal:D:\\orientdb-community-2.1.8\\databases\\JDO";
 	private static String DATABASE ="plocal:D:\\orientdb-community-2.2.13\\databases\\testDB";
 	final static Logger logger = Logger.getLogger(OrientLoader.class);
+	//private static final Logger logger = LoggerFactory.getLogger(OrientLoader.class);
 	
 	public static void initiateLoad(Model model) {
 		
@@ -47,7 +49,7 @@ public class OrientLoader {
 				
 				System.out.println("Data load Complete !!");				
 			} catch (Exception e) {
-				logger.error(e.getStackTrace());
+				logger.error(e.getMessage());
 			}
 		}
 		else
@@ -75,7 +77,7 @@ public class OrientLoader {
 			
 			gph.commit();
     	}catch (Exception e) {
-			logger.error(e.getStackTrace());
+			logger.error(e.getMessage());
 		}finally {
 			gph.shutdown();
 		}
@@ -93,7 +95,7 @@ public class OrientLoader {
 			
 			graph.commit();
     	}catch (Exception e) {
-    		logger.error(e.getStackTrace());
+    		logger.error(e.getMessage()+"\t"+e.getCause());
 		}finally {
 			graph.shutdown();
 		}
@@ -178,7 +180,21 @@ public class OrientLoader {
 			        {
 			        	logger.debug("\n\n ==========<< ColumnName : "+cd.getColumnName()+" >>================= \n\n");
 			        	JsonObject objC = gson.toJsonTree(cd).getAsJsonObject();
-				        objC.add("tableName", objT.get("tableName"));
+				        objC.addProperty("localTableName", objT.get("tableName").getAsString());
+				        
+				        JsonElement sourceTable = objT.get("tableName");
+				        JsonElement sourceColumn = objC.get("columnName");
+				        if(objC.get("foreignKey").getAsBoolean() && null != objC.get("foreignKeyTable") && null != objC.get("foreignKeyColumn"))
+				        {
+				        	JsonElement destTable = objC.get("foreignKeyTable");
+				        	JsonElement destColumn = objC.get("foreignKeyColumn");
+				        	objC.addProperty("details",sourceTable.getAsString()+" "+sourceColumn.getAsString()+" "+destTable.getAsString()+" "+destColumn.getAsString());
+				        }
+				        else
+				        {
+				        	objC.addProperty("details",sourceTable.getAsString()+" "+sourceColumn.getAsString()+" NULL NULL");
+				        }
+
 				        String tdJson1  = gson.toJson(objC);
 				        
 				        query = "CREATE VERTEX COLUMN CONTENT "+tdJson1;
@@ -198,7 +214,7 @@ public class OrientLoader {
 			logger.info("\n=============== Table & Column data load ends ========================\n\n");
 			
 		} catch (Exception e) {
-			logger.error(e.getStackTrace());
+			logger.error(e.getMessage()+"\t"+e.getCause());
 		}
     }
     
@@ -234,7 +250,7 @@ public class OrientLoader {
 			        else
 			        {
 			        	logger.debug("\n ===== << TableName : "+td.getTableName()+" >> -------hasColumn-------> << ColumnName : "+cd.getColumnName()+" >> ====== ");
-			        	query = "CREATE EDGE hasColumn FROM (SELECT FROM TABLE WHERE tableName = '"+td.getTableName()+"') TO (SELECT FROM COLUMN WHERE columnName = '"+cd.getColumnName()+"' AND tableName = '"+td.getTableName()+"') ";
+			        	query = "CREATE EDGE hasColumn FROM (SELECT FROM TABLE WHERE tableName = '"+td.getTableName()+"') TO (SELECT FROM COLUMN WHERE columnName = '"+cd.getColumnName()+"' AND localTableName = '"+td.getTableName()+"') ";
 			        	trnasactional(factory,query);
 			        	
 						// Handle Foreign Key
@@ -250,7 +266,7 @@ public class OrientLoader {
 							}
 					        else
 					        {
-								query = "CREATE EDGE isForeignKey FROM (SELECT FROM COLUMN WHERE columnName = '"+cd.getColumnName()+"' AND tableName='"+td.getTableName()+"') TO (SELECT FROM TABLE WHERE tableName = '"+cd.getForeignKeyTable()+"') SET foreignKeyColumn = '"+cd.getForeignKeyColumn()+"'";
+								query = "CREATE EDGE isForeignKey FROM (SELECT FROM COLUMN WHERE columnName = '"+cd.getColumnName()+"' AND localTableName='"+td.getTableName()+"') TO (SELECT FROM TABLE WHERE tableName = '"+cd.getForeignKeyTable()+"') SET foreignKeyColumn = '"+cd.getForeignKeyColumn()+"'";
 								trnasactional(factory, query);
 								
 								logger.debug("\n ===== << ColumnName : "+cd.getColumnName()+" >> -------isForeignKey-------> << TableName : "+td.getTableName()+" >> ====== ");
@@ -265,7 +281,7 @@ public class OrientLoader {
 			logger.info("\n===============Table and Column Complete========================\n\n");
 		
     	} catch (Exception e) {
-			logger.error(e.getStackTrace());
+			logger.error(e.getMessage());
 		}    	
     }
     
