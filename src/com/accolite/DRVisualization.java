@@ -13,8 +13,6 @@ import java.util.Enumeration;
 import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
 import com.accolite.datamodel.ColumnDetail;
 import com.accolite.datamodel.Model;
@@ -42,7 +40,7 @@ public class DRVisualization {
 		
 		//Process the JDO files
 		for(String file : files)
-			 JdoXmlParser.ParseJdoXml(file,model,unProcessedFiles);
+			 JdoXmlParser.ParseJdoXml(file,model);
 		
 		//Enrich the model
 		try {
@@ -92,36 +90,6 @@ public class DRVisualization {
 	            files.add(file.getAbsolutePath());
 	        } else if (file.isDirectory()) {
 	        	listOfFiles(file.getAbsolutePath(), files);
-	        }
-	    }
-	}
-	
-	public static void listOfFilesFromJar(String directoryName, ArrayList<String> files) {
-	    File directory = new File(directoryName);
-
-	    // get all the files from a directory
-	    File[] fList = directory.listFiles();
-	    for (File fileName : fList) {
-	        if (fileName.isFile()  && fileName.getName().endsWith("jar")) {
-	        	try {
-					@SuppressWarnings("resource")
-					JarFile jar = new JarFile(fileName);
-					Enumeration<JarEntry> entries = jar.entries();
-					 while (entries.hasMoreElements()){
-						 JarEntry entry = entries.nextElement();
-						 if(!entry.isDirectory() && entry.getName().endsWith("jdo"))
-						 {
-							 ClassLoader classLoader = Class.forName("com.accolite.DRVisualization").getClassLoader();
-							   File file = new File(classLoader.getResource(entry.getName()).toString().substring(entry.getName().lastIndexOf("jar")+1));
-							   JdoXmlParser.ParseJdoXml(file,model,unProcessedFiles);
-						 }
-					 }
-				} catch (IOException | ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-	            //files.add(file.getAbsolutePath());
-	        } else if (fileName.isDirectory()) {
-	        	listOfFiles(fileName.getAbsolutePath(), files);
 	        }
 	    }
 	}
