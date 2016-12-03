@@ -15,4 +15,8 @@ public class ConfigurationService {
 	public static ArrayList<Vertex> list() {
 		return ConfigurationDAO.listConfiguration(); 
 	}
+	
+	public static ArrayList<String> listDB() {
+		return ConfigurationDAO.listDB(); 
+	}
 }

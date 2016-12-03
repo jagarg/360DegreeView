@@ -9,7 +9,6 @@ import com.accolite.orient.OrientLoader;
 import com.google.gson.Gson;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.orient.OrientDynaElementIterable;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 
@@ -20,7 +19,6 @@ public class ConfigurationDAO {
 	@SuppressWarnings("finally")
 	public static boolean addConfiguration(Configuration configuration)
 	{
-		// AT THE BEGINNING
 		OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");
 		OrientGraph graph = factory.getTx();
 		Gson gson = new Gson();
@@ -44,6 +42,7 @@ public class ConfigurationDAO {
     		result=true;
 		}finally {
 			graph.shutdown();
+			factory.close();
 			return result;
 		}
 	}
@@ -51,18 +50,15 @@ public class ConfigurationDAO {
 	@SuppressWarnings("finally")
 	public static ArrayList<Vertex> listConfiguration()
 	{
-		// AT THE BEGINNING
 		OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");
 		OrientGraph graph = factory.getTx();
 
 		String query = "SELECT FROM CONFIGURATION";
 
 		ArrayList<Vertex> list = null;
-		OrientDynaElementIterable result = null;
 
 		try
 		{			
-			//OSQLSynchQuery<OrientGraph> tableQR = new OSQLSynchQuery<>(query);
 			OCommandSQL tableQR = new OCommandSQL(query);
 			logger.debug("\nExecute : "+tableQR.getText());
 						
@@ -80,7 +76,42 @@ public class ConfigurationDAO {
 			list=null;
 		}finally {
 			graph.shutdown();
+			factory.close();
 			return list;
 		}
 	}
+	
+	@SuppressWarnings("finally")
+	public static ArrayList<String> listDB()
+	{
+		OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");
+		OrientGraph graph = factory.getTx();
+
+		String query = "SELECT databaseName FROM CONFIGURATION";
+
+		ArrayList<String> list = null;
+
+		try
+		{			
+			OCommandSQL tableQR = new OCommandSQL(query);
+			logger.debug("\nExecute : "+tableQR.getText());
+						
+			Iterable<Vertex> database = graph.command(tableQR).execute();
+			logger.debug("\n Return : "+database.toString());
+			list = new ArrayList<>();
+			
+			for (Vertex vertex : database) {
+				list.add(vertex.getProperty("databaseName"));
+			}
+	        
+			graph.commit();
+		}catch (Exception e) {
+			logger.error(e.getMessage()+"\t"+e.getCause());
+			list=null;
+		}finally {
+			graph.shutdown();
+			factory.close();
+			return list;
+		}
+	}	
 }

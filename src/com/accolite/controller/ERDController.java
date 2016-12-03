@@ -9,17 +9,20 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.accolite.datamodel.Configuration;
+import com.accolite.datamodel.DatabaseDetail;
+import com.accolite.datamodel.Table;
 import com.accolite.orient.OrientLoader;
 import com.accolite.service.ConfigurationService;
+import com.accolite.service.UserService;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
@@ -55,22 +58,35 @@ public class ERDController {
 		}
 		return map;
 	 }
+		
+	@RequestMapping(value = "/user/listdb", method = RequestMethod.GET)
+	 public @ResponseBody List<DatabaseDetail> listDB() 
+	 {
+		List<String> list = ConfigurationService.listDB();
+		
+		List<DatabaseDetail> details = new ArrayList<>();
+		
+		for (String database : list) {
+			
+			DatabaseDetail dd = new DatabaseDetail();
+			dd.setDatabaseName(database);
+			
+			dd.setTables(UserService.listTable(database));
+			details.add(dd);
+		}
+		return details;
+	 }
+	
+	@RequestMapping(value = "/user/gettable/{database}/{table}", method = RequestMethod.GET)
+	 public @ResponseBody Table getTable(@PathVariable String database,@PathVariable String table) 
+	 {
+		return UserService.getTable(database,table);
+	 }	
 	
 	 private static void init() {
 		 logger.info("Init ....");
-			
-			// AT THE BEGINNING
-			OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");
 
-			// EVERY TIME YOU NEED A GRAPH INSTANCE
-			OrientGraph graph = factory.getTx();
-			try {
-			  
-
-			} finally {
-			   graph.shutdown();
-			}
-			
+			OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");			
 			OrientGraphNoTx gph = factory.getNoTx();
 	    	try
 	    	{			
@@ -85,6 +101,7 @@ public class ERDController {
 				logger.error(e.getMessage());
 			}finally {
 				gph.shutdown();
+				factory.close();
 			}
 		}
 	 
