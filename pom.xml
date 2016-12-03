@@ -3,7 +3,7 @@
   <groupId>ERD_Visualizer</groupId>
   <artifactId>ERD_Visualizer</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -27,6 +27,7 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
+   		  <webXml>src\main\webapp\WEB-INF\web.xml</webXml>        
         </configuration>
       </plugin>
     </plugins>
@@ -119,7 +120,6 @@
 	         <scope>system</scope>
 	         <version>11.1.0.7.0</version>
 	         <systemPath>${basedir}\lib\ojdbc6-11.1.0.7.0.jar</systemPath>
-        </dependency>		
-		
+        </dependency>			
 	</dependencies>  
 </project>

@@ -31,7 +31,7 @@ public class OrientLoader {
 		{
 			try 
 			{
-				OrientGraphFactory factory = factory();
+				OrientGraphFactory factory = factory(DATABASE);
 				
 				System.out.println("Data load initiated !!");
 				
@@ -58,14 +58,14 @@ public class OrientLoader {
 		}
 	}
 	
-	private static OrientGraphFactory factory() {
+	public static OrientGraphFactory factory(String Database) {
 		
-		OrientGraphFactory factory = new OrientGraphFactory(DATABASE).setupPool(1,10);
+		OrientGraphFactory factory = new OrientGraphFactory(Database).setupPool(1,10);
         
 		return factory;
     }
 	
-	private static void nonTrnasactional(OrientGraphFactory factory,String query) {
+	public static void nonTrnasactional(OrientGraphFactory factory,String query) {
     	OrientGraphNoTx gph = factory.getNoTx();
     	try
     	{			
@@ -83,21 +83,26 @@ public class OrientLoader {
 		}
     }
     
-    private static void trnasactional(OrientGraphFactory factory,String query) {
+    @SuppressWarnings("finally")
+	public static boolean trnasactional(OrientGraphFactory factory,String query) {
     	OrientGraph graph = factory.getTx();
+    	boolean result = false;
     	try
     	{			
 	        OCommandSQL tableQR = new OCommandSQL(query);
 	        logger.debug("\nExecute : "+tableQR.getText());
 
-	        Object result = graph.command(tableQR).execute();
-	        logger.debug("\nReturn : "+result.toString());
+	        Object tmp = graph.command(tableQR).execute();
+	        logger.debug("\nReturn : "+tmp.toString());
 			
 			graph.commit();
+			result=true;
     	}catch (Exception e) {
     		logger.error(e.getMessage()+"\t"+e.getCause());
+    		result=true;
 		}finally {
 			graph.shutdown();
+			return result;
 		}
     }
     
