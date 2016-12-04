@@ -93,5 +93,44 @@ public class UserDAO {
 			factory.close();
 			return list;
 		}
+	}
+	
+	@SuppressWarnings("finally")
+	public static ArrayList<ArrayList<Object>> getMappings(String database,String table1, String table2)
+	{
+		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"+database;
+		OrientGraphFactory factory = OrientLoader.factory(dbName);
+		OrientGraph graph = factory.getTx();
+		String query = "select path.details from "
+				+ "(select shortestPath ( "
+				+ "(select from TABLE where tableName = '"+table1+"'), "
+				+ "(select from TABLE where tableName = '"+table2+"')) "
+				+ "as path)";
+		
+		ArrayList<ArrayList<Object> >list = null;
+
+		try
+		{			
+			OCommandSQL tableQR = new OCommandSQL(query);
+			logger.debug("\nExecute : "+tableQR.getText());
+						
+			Iterable<Vertex> dbList = graph.command(tableQR).execute();
+			logger.debug("\n Return : "+database.toString());
+			list = new ArrayList<>();
+			
+			for (Vertex vertex : dbList) {
+				list.add(vertex.getProperty("path"));
+			}
+	        
+			graph.commit();
+		}catch (Exception e) {
+			logger.error(e.getMessage()+"\t"+e.getCause());
+			list=null;
+		}finally {
+			graph.shutdown();
+			factory.close();
+			return list;
+		}
 	}		
+
 }

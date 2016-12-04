@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.accolite.datamodel.Configuration;
 import com.accolite.datamodel.DatabaseDetail;
 import com.accolite.datamodel.Table;
+import com.accolite.datamodel.TableMapping;
 import com.accolite.orient.OrientLoader;
 import com.accolite.service.ConfigurationService;
 import com.accolite.service.UserService;
@@ -82,6 +83,12 @@ public class ERDController {
 	 {
 		return UserService.getTable(database,table);
 	 }	
+	
+	@RequestMapping(value = "/user/getmappings/{database}/{tables}", method = RequestMethod.GET)
+	 public @ResponseBody TableMapping getTableMapping(@PathVariable String database,@PathVariable String tables) 
+	 {
+		return UserService.getTableMapping(database,tables);
+	 }
 	
 	 private static void init() {
 		 logger.info("Init ....");
