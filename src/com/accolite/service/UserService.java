@@ -59,24 +59,34 @@ public class UserService {
 		TableMapping tableMapping = new TableMapping();
 		String[] tableList = tables.split(",");
 
-		for (int i = 0; i < tableList.length - 1; i++) {
-			for (int j = i + 1; j < tableList.length; j++) {
+		if (tableList.length == 1) {
+			ArrayList<String> data = UserDAO.getMappings(database,
+					tableList[0]);
 
-				ArrayList<ArrayList<Object>> data = UserDAO.getMappings(
-						database, tableList[i], tableList[j]);
+			// fetch path info
+			for(String path : data)
+				if (path != null) {
+					tableMapping.getMappings().add(path.toString());
+				}
+		} else {
+			for (int i = 0; i < tableList.length - 1; i++) {
+				for (int j = i + 1; j < tableList.length; j++) {
 
-				// fetch path info
-				for (Object path : data.get(0)) {
-					if (path != null) {
-						tableMapping.getMappings().add(path.toString());
+					ArrayList<ArrayList<Object>> data = UserDAO.getMappings(
+							database, tableList[i], tableList[j]);
+
+					// fetch path info
+					for (Object path : data.get(0)) {
+						if (path != null) {
+							tableMapping.getMappings().add(path.toString());
+						}
 					}
 				}
 			}
 		}
-
 		// fetch table info
 		for (String table : tableMapping.getTableNames())
-				tableMapping.getTables().add(getTable(database, table));
+			tableMapping.getTables().add(getTable(database, table));
 		return tableMapping;
 	}
 

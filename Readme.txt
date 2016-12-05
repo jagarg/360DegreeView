@@ -96,7 +96,45 @@
 			"databaseName": "DB_N",
 			"tables": null
 		  }
-		]			
+		]	
+		
+	b.	List table(s) mapping
+		-----------------------------------------
+		
+		Type : GET
+		
+		Request : http://localhost:8080/user/getmappings/{database}/{table(s)}
+		
+		Response : 
+		{
+			tables": 
+			[
+				{
+					"tableName": "TYPE_STRING",
+					"columns": 
+					[
+						{
+						  "columnName": "TYPE_STRING",
+						  "foreignTable": "TYPE_STRING",
+						  "foreignColumn": "TYPE_STRING",
+						  "foreignKey": TYPE_BOOLEAN,
+						  "primaryKey": TYPE_BOOLEAN
+						},
+						{ ... }
+					]
+					},
+					{ ... }
+				}
+			],
+			"mappings": 
+			[
+				"TYPE_STRING",
+				"TYPE_STRING",
+				.
+				.
+				.
+			]
+		}		
 	
 	Admin
 	------

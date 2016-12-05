@@ -13,11 +13,11 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 public class UserDAO {
 
 	final static Logger logger = Logger.getLogger(UserDAO.class);
-	
+
 	@SuppressWarnings("finally")
-	public static ArrayList<String> listTable(String database)
-	{
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"+database;
+	public static ArrayList<String> listTable(String database) {
+		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
+				+ database;
 		OrientGraphFactory factory = OrientLoader.factory(dbName);
 		OrientGraph graph = factory.getTx();
 
@@ -25,57 +25,54 @@ public class UserDAO {
 
 		ArrayList<String> list = null;
 
-		try
-		{			
+		try {
 			OCommandSQL tableQR = new OCommandSQL(query);
-			logger.debug("\nExecute : "+tableQR.getText());
-						
+			logger.debug("\nExecute : " + tableQR.getText());
+
 			Iterable<Vertex> dbList = graph.command(tableQR).execute();
-			logger.debug("\n Return : "+database.toString());
+			logger.debug("\n Return : " + database.toString());
 			list = new ArrayList<>();
-			
+
 			for (Vertex vertex : dbList) {
 				list.add(vertex.getProperty("tableName"));
 			}
-	        
+
 			graph.commit();
-		}catch (Exception e) {
-			logger.error(e.getMessage()+"\t"+e.getCause());
-			list=null;
-		}finally {
+		} catch (Exception e) {
+			logger.error(e.getMessage() + "\t" + e.getCause());
+			list = null;
+		} finally {
 			graph.shutdown();
 			factory.close();
 			return list;
 		}
-	}	
-	
+	}
+
 	@SuppressWarnings("finally")
-	public static ArrayList<ArrayList<Object>> getTable(String database,String table)
-	{
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"+database;
+	public static ArrayList<ArrayList<Object>> getTable(String database,
+			String table) {
+		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
+				+ database;
 		OrientGraphFactory factory = OrientLoader.factory(dbName);
 		OrientGraph graph = factory.getTx();
 
-		String query = "SELECT"
-				+ " out().columnName as columns,"
+		String query = "SELECT" + " out().columnName as columns,"
 				+ " out().primaryKey as primaryKey,"
 				+ " out().foreignKey as foreignKey,"
 				+ " out().foreignKeyTable as foreignTable,"
-				+ " out().foreignKeyColumn as foreignColumn"
-				+ " FROM TABLE "
-				+ " where tableName = '"+table+"'";
+				+ " out().foreignKeyColumn as foreignColumn" + " FROM TABLE "
+				+ " where tableName = '" + table + "'";
 
-		ArrayList<ArrayList<Object> >list = null;
+		ArrayList<ArrayList<Object>> list = null;
 
-		try
-		{			
+		try {
 			OCommandSQL tableQR = new OCommandSQL(query);
-			logger.debug("\nExecute : "+tableQR.getText());
-						
+			logger.debug("\nExecute : " + tableQR.getText());
+
 			Iterable<Vertex> dbList = graph.command(tableQR).execute();
-			logger.debug("\n Return : "+database.toString());
+			logger.debug("\n Return : " + database.toString());
 			list = new ArrayList<>();
-			
+
 			for (Vertex vertex : dbList) {
 				list.add(vertex.getProperty("columns"));
 				list.add(vertex.getProperty("primaryKey"));
@@ -83,54 +80,90 @@ public class UserDAO {
 				list.add(vertex.getProperty("foreignTable"));
 				list.add(vertex.getProperty("foreignColumn"));
 			}
-	        
+
 			graph.commit();
-		}catch (Exception e) {
-			logger.error(e.getMessage()+"\t"+e.getCause());
-			list=null;
-		}finally {
+		} catch (Exception e) {
+			logger.error(e.getMessage() + "\t" + e.getCause());
+			list = null;
+		} finally {
 			graph.shutdown();
 			factory.close();
 			return list;
 		}
 	}
-	
+
 	@SuppressWarnings("finally")
-	public static ArrayList<ArrayList<Object>> getMappings(String database,String table1, String table2)
-	{
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"+database;
+	public static ArrayList<String> getMappings(String database,
+			String tableName) {
+		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
+				+ database;
 		OrientGraphFactory factory = OrientLoader.factory(dbName);
 		OrientGraph graph = factory.getTx();
-		String query = "select path.details from "
-				+ "(select shortestPath ( "
-				+ "(select from TABLE where tableName = '"+table1+"'), "
-				+ "(select from TABLE where tableName = '"+table2+"')) "
-				+ "as path)";
+		String query = "select details as path from COLUMN "
+				+ "where foreignKey = true and " + "(localTableName='"
+				+ tableName + "' OR " + "foreignKeyTable = '" + tableName
+				+ "')";
 		
-		ArrayList<ArrayList<Object> >list = null;
+		ArrayList<String> list = null;
 
-		try
-		{			
+		try {
 			OCommandSQL tableQR = new OCommandSQL(query);
-			logger.debug("\nExecute : "+tableQR.getText());
-						
+			logger.debug("\nExecute : " + tableQR.getText());
+
 			Iterable<Vertex> dbList = graph.command(tableQR).execute();
-			logger.debug("\n Return : "+database.toString());
+			logger.debug("\n Return : " + database.toString());
 			list = new ArrayList<>();
-			
+
 			for (Vertex vertex : dbList) {
 				list.add(vertex.getProperty("path"));
 			}
-	        
+
 			graph.commit();
-		}catch (Exception e) {
-			logger.error(e.getMessage()+"\t"+e.getCause());
-			list=null;
-		}finally {
+		} catch (Exception e) {
+			logger.error(e.getMessage() + "\t" + e.getCause());
+			list = null;
+		} finally {
 			graph.shutdown();
 			factory.close();
 			return list;
 		}
-	}		
+	}
+
+	@SuppressWarnings("finally")
+	public static ArrayList<ArrayList<Object>> getMappings(String database,
+			String table1, String table2) {
+		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
+				+ database;
+		OrientGraphFactory factory = OrientLoader.factory(dbName);
+		OrientGraph graph = factory.getTx();
+		String query = "select path.details from " + "(select shortestPath ( "
+				+ "(select from TABLE where tableName = '" + table1 + "'), "
+				+ "(select from TABLE where tableName = '" + table2 + "')) "
+				+ "as path)";
+		
+		ArrayList<ArrayList<Object>> list = null;
+
+		try {
+			OCommandSQL tableQR = new OCommandSQL(query);
+			logger.debug("\nExecute : " + tableQR.getText());
+
+			Iterable<Vertex> dbList = graph.command(tableQR).execute();
+			logger.debug("\n Return : " + database.toString());
+			list = new ArrayList<>();
+
+			for (Vertex vertex : dbList) {
+				list.add(vertex.getProperty("path"));
+			}
+
+			graph.commit();
+		} catch (Exception e) {
+			logger.error(e.getMessage() + "\t" + e.getCause());
+			list = null;
+		} finally {
+			graph.shutdown();
+			factory.close();
+			return list;
+		}
+	}
 
 }
