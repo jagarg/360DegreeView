@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class TableMapping {
 
 	private List<Table> tables = new ArrayList<Table>();
-	private Set<String> mappings = new HashSet<String>();
+	private Set<Path> paths = new HashSet<Path>();
 
 	public List<Table> getTables() {
 		return tables;
@@ -20,23 +20,22 @@ public class TableMapping {
 		this.tables = tableName;
 	}
 
-	public Set<String> getMappings() {
-		return mappings;
+	public Set<Path> getPaths() {
+		return paths;
 	}
 
-	public void setMappings(Set<String> mappings) {
-		this.mappings = mappings;
+	public void setPaths(Set<Path> mappings) {
+		this.paths = mappings;
 	}
 
 	@JsonIgnore
 	public List<String> getTableNames() {
 		Set<String> tableNames = new HashSet<String>();
-		for (String mapping : mappings) {
-			String[] mappingValues = mapping.split(" ");
-			if (!mappingValues[0].equalsIgnoreCase("NULL"))
-				tableNames.add(mappingValues[0]);
-			if (!mappingValues[2].equalsIgnoreCase("NULL"))
-				tableNames.add(mappingValues[2]);
+		for (Path path : paths){ 
+			if(path.getSourceTable()!=null)
+				tableNames.add(path.getSourceTable());
+			if(path.getTargetTable()!=null)
+				tableNames.add(path.getTargetTable());
 		}
 		return new ArrayList<String>(tableNames);
 	}

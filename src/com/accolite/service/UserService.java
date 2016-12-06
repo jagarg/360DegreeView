@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.accolite.dao.UserDAO;
 import com.accolite.datamodel.Column;
+import com.accolite.datamodel.Path;
 import com.accolite.datamodel.Table;
 import com.accolite.datamodel.TableMapping;
 
@@ -66,7 +67,17 @@ public class UserService {
 			// fetch path info
 			for(String path : data)
 				if (path != null) {
-					tableMapping.getMappings().add(path.toString());
+					Path newPath = new Path();
+					String[] pathArr = path.toString().split(" ");
+					if(!pathArr[0].equalsIgnoreCase("NULL"))							
+						newPath.setSourceTable(pathArr[0]);
+					if(!pathArr[1].equalsIgnoreCase("NULL"))							
+						newPath.setSourceColumn(pathArr[1]);
+					if(!pathArr[2].equalsIgnoreCase("NULL"))							
+						newPath.setTargetTable(pathArr[2]);
+					if(!pathArr[3].equalsIgnoreCase("NULL"))							
+						newPath.setTargtColumn(pathArr[3]);
+					tableMapping.getPaths().add(newPath);
 				}
 		} else {
 			for (int i = 0; i < tableList.length - 1; i++) {
@@ -78,7 +89,17 @@ public class UserService {
 					// fetch path info
 					for (Object path : data.get(0)) {
 						if (path != null) {
-							tableMapping.getMappings().add(path.toString());
+							Path newPath = new Path();
+							String[] pathArr = path.toString().split(" ");
+							if(!pathArr[0].equalsIgnoreCase("NULL"))							
+								newPath.setSourceTable(pathArr[0]);
+							if(!pathArr[1].equalsIgnoreCase("NULL"))							
+								newPath.setSourceColumn(pathArr[1]);
+							if(!pathArr[2].equalsIgnoreCase("NULL"))							
+								newPath.setTargetTable(pathArr[2]);
+							if(!pathArr[3].equalsIgnoreCase("NULL"))							
+								newPath.setTargtColumn(pathArr[3]);
+							tableMapping.getPaths().add(newPath);
 						}
 					}
 				}

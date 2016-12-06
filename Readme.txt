@@ -126,13 +126,15 @@
 					{ ... }
 				}
 			],
-			"mappings": 
+			"paths": 
 			[
-				"TYPE_STRING",
-				"TYPE_STRING",
-				.
-				.
-				.
+				{
+			      "sourceTable": "TYPE_STRING",
+			      "sourceColumn": "TYPE_STRING",
+			      "targetTable": "TYPE_STRING",
+			      "targtColumn": "TYPE_STRING",
+			    },
+			    {...}
 			]
 		}		
 	
