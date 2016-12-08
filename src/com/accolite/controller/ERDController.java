@@ -90,6 +90,12 @@ public class ERDController {
 		return UserService.getTableMapping(database,tables);
 	 }
 	
+	@RequestMapping(value = "/user/getallpaths/{database}/{tables}", method = RequestMethod.GET)
+	 public @ResponseBody TableMapping getTableAllPaths(@PathVariable String database,@PathVariable String tables) 
+	 {
+		return UserService.getTableAllPaths(database,tables);
+	 }
+	
 	 private static void init() {
 		 logger.info("Init ....");
 

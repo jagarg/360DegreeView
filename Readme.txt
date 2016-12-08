@@ -98,7 +98,7 @@
 		  }
 		]	
 		
-	b.	List table(s) mapping
+	c.	List table(s) mapping
 		-----------------------------------------
 		
 		Type : GET
@@ -132,11 +132,52 @@
 			      "sourceTable": "TYPE_STRING",
 			      "sourceColumn": "TYPE_STRING",
 			      "targetTable": "TYPE_STRING",
-			      "targtColumn": "TYPE_STRING",
+			      "targetColumn": "TYPE_STRING",
 			    },
 			    {...}
 			]
 		}		
+
+	d.	List all paths table(s)
+		-----------------------------------------
+		
+		Type : GET
+		
+		Request : http://localhost:8080/user/getallpaths/{database}/{table(s)}
+		
+		Response : 
+		{
+			tables": 
+			[
+				{
+					"tableName": "TYPE_STRING",
+					"columns": 
+					[
+						{
+						  "columnName": "TYPE_STRING",
+						  "foreignTable": "TYPE_STRING",
+						  "foreignColumn": "TYPE_STRING",
+						  "foreignKey": TYPE_BOOLEAN,
+						  "primaryKey": TYPE_BOOLEAN
+						},
+						{ ... }
+					]
+					},
+					{ ... }
+				}
+			],
+			"paths": 
+			[
+				{
+			      "sourceTable": "TYPE_STRING",
+			      "sourceColumn": "TYPE_STRING",
+			      "targetTable": "TYPE_STRING",
+			      "targetColumn": "TYPE_STRING",
+			    },
+			    {...}
+			]
+		}		
+	
 	
 	Admin
 	------

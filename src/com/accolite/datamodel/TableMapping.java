@@ -32,9 +32,9 @@ public class TableMapping {
 	public List<String> getTableNames() {
 		Set<String> tableNames = new HashSet<String>();
 		for (Path path : paths){ 
-			if(path.getSourceTable()!=null)
+			if(path.getSourceTable()!=null && !path.getSourceTable().isEmpty())
 				tableNames.add(path.getSourceTable());
-			if(path.getTargetTable()!=null)
+			if(path.getTargetTable()!=null && !path.getTargetTable().isEmpty())
 				tableNames.add(path.getTargetTable());
 		}
 		return new ArrayList<String>(tableNames);
