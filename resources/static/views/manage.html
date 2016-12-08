@@ -1,0 +1,205 @@
+<div ng-cloak ng-controller="ManageController">     
+	<div class="alert alert-success alert-dismissible" role="alert" ng-show="showSucess">
+  		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  		<strong>Sucess!</strong><div ng-bind-html="successMsg"></div>
+	</div>
+	<div class="alert alert-danger alert-dismissible" role="alert" ng-show="showError">
+  		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  		<strong>Error!</strong><div ng-bind-html="errorMsg"></div>
+	</div>	
+    <md-tabs md-dynamic-height="" md-border-bottom="" md-selected="selectedIndex" md-center-tabs="true">
+      <md-tab label="Start">
+        <md-content class="md-padding">
+          <h1 class="md-display-2">Welcome !!</h1>
+          <p> You can Add new Configuration to load <span class="badge">Entity-Relation</span>. Please click next to continue... </p>
+            <div layout="column" ng-cloak class="md-inline-form">
+	          <md-content md-theme="docs-dark" layout-gt-sm="row" layout-padding>
+			    <div>	
+				    <md-input-container>
+				        <label>How about a Configuration Name !!!</label>
+				        <input type="text" ng-model="newConfigName">
+				        <div ng-show="inValidConfigName">Name already present !!!</div>
+				      </md-input-container>			      
+			    </div>
+			  </md-content>
+          </div>
+        </md-content>
+        <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+        	<md-button class="md-raised md-primary" ng-click="selectedIndex = 1;" ng-disabled="welcomeNext">Begin</md-button>
+        </section>
+      </md-tab>
+      
+      <md-tab label="Database Details" ng-disabled="disabledatabase">
+        <md-content class="md-padding">
+          <h1 class="md-display-2">Databse Details</h1>
+          <div layout="column" ng-cloak class="md-inline-form">
+           	<md-content md-theme="docs-dark" class="md-padding" layout="column"> 
+			            <div layout="row">
+							<md-input-container>
+						        <label>Database Name</label>
+						        <input ng-model="dbName" type="text">
+						        <div ng-show="inValidDBName">Name already present !!!</div>
+						      </md-input-container>
+						      
+						      <md-input-container>
+						        <label>User Name</label>
+						        <input ng-model="dbuser" type="text" placeholder="If left blank default UserName will be <<Admin>>">
+						      </md-input-container>
+						      			      
+							  <md-input-container>
+						        <label>Password</label>
+						        <input ng-model="dbpasswd" type="password" placeholder="If left blank default UserName will be <<Admin>>">
+						      </md-input-container>
+			            </div> 
+			  </md-content>
+          </div>
+        </md-content>
+        <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+        	<md-button class="md-raised md-primary" ng-click="selectedIndex = selectedIndex - 1;" >Previous</md-button>
+        	<md-button class="md-raised md-primary" ng-click="selectedIndex = selectedIndex + 1;" ng-disabled="databaseNext">Next</md-button>
+        </section> 
+      </md-tab>
+      
+      <md-tab label="Specify Schema" ng-disabled="disableschema">
+        <md-content class="md-padding">
+          <h1 class="md-display-2">Select Schema</h1>
+            <div layout="column" ng-cloak class="md-inline-form">
+	          <md-content md-theme="docs-dark" layout-gt-sm="row" layout-padding>
+			    <div>	
+			      <md-input-container class="md-block" flex-gt-sm>
+		            <label>Schema Type</label>
+		            <md-select ng-model="schemaSelect">
+		              <md-option ng-repeat="opt in schemaOptions" ng-value="opt">
+		                {{opt}}
+		              </md-option>
+		            </md-select>
+		          </md-input-container>
+			    </div>
+			    </md-content>			    
+			    
+			    <!-- JDO -->
+			    <div ng-show="schemaSelect=='JDO'">
+			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
+			            <div layout="row">
+							<md-input-container>
+			                	<input type="file" accept=".zip,.jar" file-model = "jdoFile">
+			                	<div>JDO files zip</div>
+			                </md-input-container>
+			                
+			                <md-input-container>
+			                	<input type="file" accept=".zip,.jar" file-model ="jarFile">
+			                	<div>Source Code zip</div>
+			                </md-input-container>
+			            </div> 
+			                
+			     		<div layout="row">
+							<md-input-container>
+								<button ng-click="uploadFile()">upload me</button>
+							</md-input-container>
+			            </div>   
+			        </md-content>
+					<!-- form method="POST" enctype="multipart/form-data" action="/upload">
+					  File to upload: <input type="file" name="upfile"><br/>
+					  <br/>
+					  <input type="submit" value="Press"> to upload the file!
+					</form-->			        
+		       </div>
+		       
+		       <!-- form ng-show="opt=='HIBERNATE'">
+			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
+			            <div layout="row">
+							<md-input-container>
+			                	<input type="file" accept=".zip,.jar">
+			                	<div>Hibernate files zip</div>
+			                </md-input-container>
+			                
+			                <md-input-container>
+			                	<input type="file" accept=".zip,.jar">
+			                	<div>Source Code zip</div>
+			                </md-input-container>
+			            </div>   
+			        </md-content>
+		       </form>
+		       
+		       <form ng-show="opt=='RDBMS'">
+			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
+			            <div layout="row">
+							<md-input-container>
+			                	<label>DataBase</label>
+					            <md-select ng-model="rdbmsSelect">
+					              <md-option>Oracle</md-option>
+					              <md-option>MySQL</md-option>
+					            </md-select>
+			                </md-input-container>
+							
+							<md-input-container>
+			                	<label>Host Name</label>
+								<input type="text">
+			                </md-input-container>		
+			                
+							<md-input-container>
+			                	<label>Port</label>
+								<input type="number">
+			                </md-input-container>
+			                
+							<md-input-container>
+			                	<label>Database</label>
+								<input type="text">
+			                </md-input-container>		 
+			                
+			                <md-input-container>
+			                	<label>User Name</label>
+								<input type="text">
+			                </md-input-container>
+			                
+							<md-input-container>
+			                	<label>Password</label>
+								<input type="password">
+			                </md-input-container>			                
+			            </div>   
+			        </md-content>
+		       </form>
+		       
+		       <form ng-show="opt=='CUSTOM JARS'">
+			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
+			            <div layout="row">
+							<md-input-container>
+			                	<input type="file" accept=".zip,.jar">
+			                	<div>Hibernate files zip</div>
+			                </md-input-container>
+			                
+			                <md-input-container>
+			                	<input type="file" accept=".zip,.jar">
+			                	<div>Source Code zip</div>
+			                </md-input-container>
+			            </div>   
+			        </md-content>
+		       </form-->
+          </div>
+        </md-content>
+        <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+        	<md-button class="md-raised md-primary" ng-click="selectedIndex = selectedIndex - 1;" >Previous</md-button>
+        	<md-button class="md-raised md-primary" ng-click="selectedIndex = selectedIndex + 1;" >Next</md-button>
+        </section>        
+      </md-tab>    
+      
+      <md-tab label="Complete" ng-disabled="disablecomplete">
+        <md-content class="md-padding">
+        <h1 class="md-display-2">Summary </h1>
+        <div layout="row" layout-wrap>
+  			<div flex="50">
+  				<div class="well well-lg" ng-bind-html="summary"></div>
+  			</div>
+  			<div flex="50">
+	  			<section layout="row" layout-sm="column" layout-align="center end" layout-wrap>
+	  				<div class="btn-toolbar">
+	  				<button type="button" class="btn btn-primary" ng-click="selectedIndex = selectedIndex - 1;">Previous</button>
+		        	<button type="button" class="btn btn-success" ng-click="beginDataLoad();">Complete</button>
+		        	</div>
+	        	</section>    
+  			</div>
+  		</div>
+        </md-content>
+      </md-tab>      
+    </md-tabs> 
+</div>

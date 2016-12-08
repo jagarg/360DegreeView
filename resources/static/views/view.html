@@ -1,0 +1,21 @@
+<div ng-cloak ng-controller="ViewController">   
+    <table class="table table-bordered table-striped">
+	    <thead>
+	      <tr>
+	        <th>Configuration</th>
+	        <th>DataBase</th>
+	        <th>Schema Name</th>
+	        <th>Schema Details</th>	        
+	      </tr>
+	    </thead>
+	    
+	    <tbody>
+	      <tr ng-repeat="config in Configuration">
+	        <td>{{ config.configName }}</td>
+	        <td>{{ config.databaseName }}</td>
+	        <td>{{ config.schemaName }}</td>
+	        <td>{{ config.schemaDetail }}</td>
+	      </tr>
+	    </tbody>
+  	</table>
+</div>
