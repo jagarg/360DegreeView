@@ -9,33 +9,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class TableMapping {
 
-	private List<Table> tables = new ArrayList<Table>();
-	private Set<Path> paths = new HashSet<Path>();
+	private List<Table> vertices = new ArrayList<Table>();
+	private Set<Edge> edges = new HashSet<Edge>();
 
-	public List<Table> getTables() {
-		return tables;
+	public List<Table> getVertices() {
+		return vertices;
 	}
 
-	public void setTables(List<Table> tableName) {
-		this.tables = tableName;
+	public void setVertices(List<Table> vertices) {
+		this.vertices = vertices;
 	}
 
-	public Set<Path> getPaths() {
-		return paths;
+	public Set<Edge> getEdges() {
+		return edges;
 	}
 
-	public void setPaths(Set<Path> mappings) {
-		this.paths = mappings;
+	public void setEdges(Set<Edge> edges) {
+		this.edges = edges;
 	}
 
 	@JsonIgnore
 	public List<String> getTableNames() {
 		Set<String> tableNames = new HashSet<String>();
-		for (Path path : paths){ 
-			if(path.getSourceTable()!=null && !path.getSourceTable().isEmpty())
-				tableNames.add(path.getSourceTable());
-			if(path.getTargetTable()!=null && !path.getTargetTable().isEmpty())
-				tableNames.add(path.getTargetTable());
+		for (Edge path : edges){ 
+			if(path.getOut()!=null && !path.getOut().isEmpty())
+				tableNames.add(path.getOut());
+			if(path.getIn()!=null && !path.getIn().isEmpty())
+				tableNames.add(path.getIn());
 		}
 		return new ArrayList<String>(tableNames);
 	}

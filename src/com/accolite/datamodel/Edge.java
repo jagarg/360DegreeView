@@ -1,22 +1,22 @@
 package com.accolite.datamodel;
 
-public class Path {
-	String sourceTable;
+public class Edge {
+	String out;
 	String sourceColumn;
-	String targetTable;
+	String in;
 	String targetColumn;
 	
-	public Path(){
-		sourceTable="";
+	public Edge(){
+		out="";
 		sourceColumn="";
-		targetTable="";
+		in="";
 		targetColumn="";
 	}
-	public String getSourceTable() {
-		return sourceTable;
+	public String getOut() {
+		return out;
 	}
-	public void setSourceTable(String sourceTable) {
-		this.sourceTable = sourceTable;
+	public void setOut(String out) {
+		this.out = out;
 	}
 	public String getSourceColumn() {
 		return sourceColumn;
@@ -24,11 +24,11 @@ public class Path {
 	public void setSourceColumn(String sourceColumn) {
 		this.sourceColumn = sourceColumn;
 	}
-	public String getTargetTable() {
-		return targetTable;
+	public String getIn() {
+		return in;
 	}
-	public void setTargetTable(String targetTable) {
-		this.targetTable = targetTable;
+	public void setIn(String in) {
+		this.in = in;
 	}
 	public String getTargetColumn() {
 		return targetColumn;
@@ -39,10 +39,10 @@ public class Path {
 	
 	@Override
 	public boolean equals(Object o){
-		if (o instanceof Path){
-			Path obj=(Path)o;
-			if(obj.sourceTable.equals(sourceTable) &&  
-					obj.targetTable.equals(targetTable) &&
+		if (o instanceof Edge){
+			Edge obj=(Edge)o;
+			if(obj.out.equals(out) &&  
+					obj.in.equals(in) &&
 					obj.sourceColumn.equals(sourceColumn) &&
 					obj.targetColumn.equals(targetColumn))
 					return true;
@@ -52,6 +52,6 @@ public class Path {
 	
 	@Override
 	public int hashCode(){
-		return (sourceTable.hashCode()*sourceColumn.hashCode()*targetTable.hashCode()*targetColumn.hashCode());
+		return (out.hashCode()*sourceColumn.hashCode()*in.hashCode()*targetColumn.hashCode());
 	}
 }

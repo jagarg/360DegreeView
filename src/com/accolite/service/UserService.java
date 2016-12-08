@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.accolite.dao.UserDAO;
 import com.accolite.datamodel.Column;
-import com.accolite.datamodel.Path;
+import com.accolite.datamodel.Edge;
 import com.accolite.datamodel.Table;
 import com.accolite.datamodel.TableMapping;
 
@@ -69,17 +69,17 @@ public class UserService {
 			// fetch path info
 			for (String path : data)
 				if (path != null) {
-					Path newPath = new Path();
+					Edge newPath = new Edge();
 					String[] pathArr = path.toString().split(" ");
 					if (!pathArr[0].equalsIgnoreCase("NULL"))
-						newPath.setSourceTable(pathArr[0]);
+						newPath.setOut(pathArr[0]);
 					if (!pathArr[1].equalsIgnoreCase("NULL"))
 						newPath.setSourceColumn(pathArr[1]);
 					if (!pathArr[2].equalsIgnoreCase("NULL"))
-						newPath.setTargetTable(pathArr[2]);
+						newPath.setIn(pathArr[2]);
 					if (!pathArr[3].equalsIgnoreCase("NULL"))
 						newPath.setTargetColumn(pathArr[3]);
-					tableMapping.getPaths().add(newPath);
+					tableMapping.getEdges().add(newPath);
 				}
 		} else {
 			for (int i = 0; i < tableList.length - 1; i++) {
@@ -91,17 +91,17 @@ public class UserService {
 					// fetch path info
 					for (Object path : data.get(0)) {
 						if (path != null) {
-							Path newPath = new Path();
+							Edge newPath = new Edge();
 							String[] pathArr = path.toString().split(" ");
 							if (!pathArr[0].equalsIgnoreCase("NULL"))
-								newPath.setSourceTable(pathArr[0]);
+								newPath.setOut(pathArr[0]);
 							if (!pathArr[1].equalsIgnoreCase("NULL"))
 								newPath.setSourceColumn(pathArr[1]);
 							if (!pathArr[2].equalsIgnoreCase("NULL"))
-								newPath.setTargetTable(pathArr[2]);
+								newPath.setIn(pathArr[2]);
 							if (!pathArr[3].equalsIgnoreCase("NULL"))
 								newPath.setTargetColumn(pathArr[3]);
-							tableMapping.getPaths().add(newPath);
+							tableMapping.getEdges().add(newPath);
 						}
 					}
 				}
@@ -109,7 +109,7 @@ public class UserService {
 		}
 		// fetch table info
 		for (String table : tableMapping.getTableNames())
-			tableMapping.getTables().add(getTable(database, table));
+			tableMapping.getVertices().add(getTable(database, table));
 		return tableMapping;
 	}
 
@@ -120,28 +120,28 @@ public class UserService {
 
 		ArrayList<String> data = UserDAO.getAllPaths(database, tables);
 		// fetch path info
-		Set<Path> paths = new HashSet<Path>();
+		Set<Edge> paths = new HashSet<Edge>();
 		for (String path1 : data) {
 			String path = path1.toString();
 			if (path != null) {
-				Path newPath = new Path();
+				Edge newPath = new Edge();
 				String[] pathArr = path.toString().split(" ");
 				if (!pathArr[0].equalsIgnoreCase("NULL"))
-					newPath.setSourceTable(pathArr[0]);
+					newPath.setOut(pathArr[0]);
 				if (!pathArr[1].equalsIgnoreCase("NULL"))
 					newPath.setSourceColumn(pathArr[1]);
 				if (!pathArr[2].equalsIgnoreCase("NULL"))
-					newPath.setTargetTable(pathArr[2]);
+					newPath.setIn(pathArr[2]);
 				if (!pathArr[3].equalsIgnoreCase("NULL"))
 					newPath.setTargetColumn(pathArr[3]);
 				paths.add(newPath);
 			}
 		}
-		tableMapping.setPaths(paths);
+		tableMapping.setEdges(paths);
 
 		// fetch table info
 		for (String table : tableMapping.getTableNames())
-			tableMapping.getTables().add(getTable(database, table));
+			tableMapping.getVertices().add(getTable(database, table));
 		return tableMapping;
 	}
 
