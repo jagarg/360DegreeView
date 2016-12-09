@@ -32,7 +32,7 @@ public class DRVisualization {
 		
 		
 		
-		JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarPath, new ArrayList<String>(),"jdo"),model);
+		model = JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarPath, new ArrayList<String>(),"jdo"));
 		
 		//Enrich the model
 		

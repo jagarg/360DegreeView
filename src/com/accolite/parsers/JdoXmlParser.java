@@ -25,7 +25,8 @@ public class JdoXmlParser {
 	static boolean table_found;
 	static ColumnDetail virtualPrimaryKey = null;
 
-	public static Model ParseJdoXml(ArrayList<String> files, Model model) {
+	public static Model ParseJdoXml(ArrayList<String> files) {
+		Model model = new Model();
 		for (String file : files) {
 			TableDetail table = new TableDetail();
 			table_found = false;
