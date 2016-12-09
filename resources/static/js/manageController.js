@@ -183,12 +183,26 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 				summary	= summary + "<tr><th>Databse Name</th><th>"+$scope.dbName+"</th></tr>";
 				summary	= summary + "<tr><th>Schema Type</th><th>"+$scope.schemaSelect+"</th></tr>";
 				
-				if($scope.schemaSelect == 'JDO')
+				if($scope.schemaSelect == 'JDO' || $scope.schemaSelect == 'HIBERNATE')
 				{
-					summary	= summary + "<tr><th>JDO zip</th><th>"+$scope.jdoFile.name+"</th></tr>";
-					summary	= summary + "<tr><th>Code jar</th><th>"+$scope.jarFile.name+"</th></tr>";
+					summary	= summary + "<tr><th>Zip File</th><th>"+$scope.fileOne.name+"</th></tr>";
 				}
-				
+				else if($scope.schemaSelect == 'ORACLE')
+				{
+					var details = "DRIVER CLASS = oracle.jdbc.driver.OracleDriver<br/>";
+					details += "URL = jdbc:oracle:thin:@"+$scope.host+":"+$scope.port+":"+$scope.databaseName+"<br/>";
+					details += "USERNAME = "+$scope.userName+"<br/>";
+					details += "PASSWORD = "+$scope.password+"<br/>";
+					summary	= summary + "<tr><th>RDBMS Details</th><th>"+details+"</th></tr>";
+				}
+				else if($scope.schemaSelect == 'MYSQL')
+				{
+					var details = "DRIVER CLASS = com.mysql.jdbc.Driver<br/>";
+					details += "URL = jdbc:mysql://"+$scope.host+":"+$scope.port+":"+$scope.databaseName+"<br/>";
+					details += "USERNAME = "+$scope.userName+"<br/>";
+					details += "PASSWORD = "+$scope.password+"<br/>";
+					summary	= summary + "<tr><th>RDBMS Details</th><th>"+details+"</th></tr>";
+				}
 				summary = summary + "</thead></table>"
 				$scope.summary = $sce.trustAsHtml(summary);
 			}

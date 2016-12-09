@@ -94,19 +94,54 @@
 
 		       <!-- ORACLE or MYSQL -->
 		       
-		       <!-- div ng-show="schemaSelect=='JDO' || schemaSelect=='HIBERNATE'">
+		       <div ng-show="schemaSelect=='ORACLE' || schemaSelect=='MYSQL'">
 			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
-			            <div layout="row">
+						<div flex="50" ng-init="host='localhost';port=8080;databaseName='testDB';userName='admin';password='admin'">
+  							<div class="well well-lg" style="background-color : black" ng-show="schemaSelect=='ORACLE'">
+ 									<p>DRIVER CLASS = oracle.jdbc.driver.OracleDriver</p>
+									<p>URL = jdbc:oracle:thin:@
+										<span class="badge" style="background-color:yellow; color:black">{{host}}</span>:
+										<span class="badge" style="background-color:yellow; color:black">{{port}}</span>:
+										<span class="badge" style="background-color:yellow; color:black">{{databaseName}}</span>
+									</p>
+									<p>USERNAME =<span class="badge" style="background-color:yellow; color:black">{{userName}}</span></p>
+									<p>PASSWORD =<span class="badge" style="background-color:yellow; color:black">{{password}}</span></p>
+								</div>
+								<div class="well well-lg" style="background-color : black" ng-show="schemaSelect=='MYSQL'">
+ 									<p>DRIVER CLASS = com.mysql.jdbc.Driver</p>
+									<p>URL = jdbc:mysql://
+										<span class="badge" style="background-color:yellow; color:black">{{host}}</span>:
+										<span class="badge" style="background-color:yellow; color:black">{{port}}</span>:
+										<span class="badge" style="background-color:yellow; color:black">{{databaseName}}</span>
+									</p>
+									<p>USERNAME =<span class="badge" style="background-color:yellow; color:black">{{userName}}</span></p>
+									<p>PASSWORD =<span class="badge" style="background-color:yellow; color:black">{{password}}</span></p>
+								</div>
+						</div>
+							<div layout="row">
 							<md-input-container>
-			                	<input type="file" accept=".zip" file-model = "fileOne">
-			                	<div>Zip file</div>
+								<label>HostName</label>
+			                	<input type="text" ng-model="host" ng-value="localhost">
+			                </md-input-container>
+							<md-input-container>
+								<label>Port Number</label>							
+			                	<input type="number" ng-model="port" value="localhost">
+			                </md-input-container>
+							<md-input-container>
+								<label>Database Name</label>							
+			                	<input type="text" ng-model="databaseName" value="localhost">
+			                </md-input-container>
+							<md-input-container>
+								<label>Database UserName</label>							
+			                	<input type="text" ng-model="userName" value="localhost">
 			                </md-input-container>
 			                <md-input-container>
-								<button ng-click="uploadFile()">Upload</button>
-							</md-input-container>
-			            </div> 
+								<label>Database Password</label>							
+			                	<input type="text" ng-model="password" value="localhost">
+			                </md-input-container>
+			            	</div>
 			        </md-content>			        
-		       </div-->
+		       </div>
 		       
 		       <!-- CUSTOM JAR/ZIP -->
           </div>
