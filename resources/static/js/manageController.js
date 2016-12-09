@@ -285,13 +285,11 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
     } 
     
     $scope.uploadFile = function(){
-        var jdofile = $scope.jdoFile;
-        var jarfile = $scope.jarFile;
+        var fileone = $scope.fileOne;
         
         var fd = new FormData();
         fd.append('configName',$scope.newConfigName);
-        fd.append('jdofile', jdofile);
-        fd.append('jarfile', jarfile);
+        fd.append('fileOne', fileone);
 
         var uploadUrl = "/upload";
         //fileUpload.uploadFileToUrl(fd, uploadUrl);

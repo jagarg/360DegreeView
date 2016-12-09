@@ -124,7 +124,7 @@ public class ERDController {
 	}
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST, consumes = {"multipart/form-data"}, produces = "application/json")
-    public @ResponseBody String handleFileUpload(@RequestParam(value = "configName",required=true) String configName,@RequestParam(value = "jdofile",required=true) MultipartFile jdo,@RequestParam(value = "jarfile",required=false) MultipartFile jar,           
+    public @ResponseBody String handleFileUpload(@RequestParam(value = "configName",required=true) String configName,@RequestParam(value = "fileOne",required=true) MultipartFile zip,           
             MultipartHttpServletRequest request, ModelAndView modelAndView){    
 		
 	    //String filePath = request.getServletContext().getRealPath("/"+configName+"/");
@@ -137,33 +137,23 @@ public class ERDController {
 	    else
 	    	System.out.println("Directory not created !!");
 	   
-		String jdoFile = filePath+jdo.getName()+".zip";
-		String jarFile = filePath+jar.getName()+".jar";
+		String jdoFile = filePath+zip.getName()+".zip";
 		
-	    if (!jdo.isEmpty() && !jar.isEmpty()) {
+	    if (!zip.isEmpty()) {
 	        try {
-	            byte[] bytes = jdo.getBytes();
+	            byte[] bytes = zip.getBytes();
 	            File f = new File(jdoFile);
 		    	f.createNewFile();
 	            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(f));
 	            stream.write(bytes);
 	            stream.close();
-	            
-	            
-	            bytes = jar.getBytes();
-	            f = new File(jarFile);
-		    	f.createNewFile();
-	            stream = new BufferedOutputStream(new FileOutputStream(f));
-	            stream.write(bytes);
-	            stream.close();
-	            
-	            return JSONObject.quote("You successfully uploaded " + jdoFile + " and " + jarFile + " !");
+	            return JSONObject.quote("You successfully uploaded " + jdoFile + " !");
 	        } catch (Exception e) {
-	            System.out.println("You failed to upload " + jdoFile + " and " + jarFile + " => " + e.getMessage());;
-	            return "You failed to upload " + jdoFile + " and " + jarFile + " => " + e.getMessage();
+	            System.out.println("You failed to upload " + jdoFile + "  => " + e.getMessage());;
+	            return "You failed to upload " + jdoFile + e.getMessage();
 	        }
 	    } else {
-	        System.out.println("You failed to upload " + jdoFile + " and " + jarFile + " because the file was empty.");
+	        System.out.println("You failed to upload " + jdoFile + " because the file was empty.");
 	        return "You failed to upload files because one of the file was empty.";
 	    } 
     }
