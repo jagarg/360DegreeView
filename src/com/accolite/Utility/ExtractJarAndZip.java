@@ -16,7 +16,7 @@ public class ExtractJarAndZip implements Runnable {
 	public ExtractJarAndZip(String unJarPath, File fileName,String fileType) {
 		this.unJarPath = unJarPath;
 		this.file = fileName;
-		this.fileType = "."+fileType;
+		this.fileType = fileType;
 	}
 
 	@Override
@@ -26,22 +26,26 @@ public class ExtractJarAndZip implements Runnable {
 			try {
 				ZipFile compressedFile = null;
 				String fileName = file.toString();
-				if(fileName.contains(".jar"))
+				String jarOrzip = null;
+				if(fileName.contains(".jar")){
 					compressedFile = new JarFile(file);
-				else if(fileName.contains(".zip"))
+					jarOrzip = ".jar";
+				}
+				else if(fileName.contains(".zip")){
 					compressedFile	= new ZipFile(file);
+					jarOrzip = ".zip";
+				}
 
 				File unJarDirectory = new File(unJarPath
 						+ "/"
 						+ file
 								.toString()
-								.substring(
-										file.toString().lastIndexOf("\\"))
-								.replaceAll(".jar", ""));
-
+								.substring(file.toString().lastIndexOf("\\"))
+								.replaceAll(jarOrzip, ""));
 				if (!unJarDirectory.exists())
 					unJarDirectory.mkdir();
 				Enumeration<? extends ZipEntry> entries = compressedFile.entries();
+				boolean isZipPresent =false;
 				while (entries.hasMoreElements()) {
 					ZipEntry entry = entries.nextElement();
 
@@ -67,13 +71,15 @@ public class ExtractJarAndZip implements Runnable {
 						is.close();
 						
 						if (entry.getName().contains(".jar") || entry.getName().contains(".zip") ) {
-							Utility.extractJarAndZipFiles(unJarPath,unJarPath,fileType,false);
+							isZipPresent = true;
 						}
 						
 					} else
 						continue;
 
 				}
+				if(isZipPresent)
+					Utility.extractJarAndZipFiles(unJarDirectory.toString(),unJarPath,fileType,false);
 				// delete empty directory
 				if (unJarDirectory.list().length == 0)
 					unJarDirectory.delete();
