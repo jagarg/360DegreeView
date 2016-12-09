@@ -1,4 +1,4 @@
-package com.accolite.utility;
+package com.accolite.Utility;
 
 import java.io.BufferedReader;
 import java.io.File;

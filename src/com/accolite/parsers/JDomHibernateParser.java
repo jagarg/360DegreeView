@@ -15,6 +15,7 @@ import org.jdom2.input.SAXBuilder;
 import com.accolite.datamodel.ColumnDetail;
 import com.accolite.datamodel.Model;
 import com.accolite.datamodel.TableDetail;
+import com.accolite.orient.OrientLoader;
 
 public class JDomHibernateParser {
 	

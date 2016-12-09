@@ -18,7 +18,7 @@ import javax.persistence.*;
 import com.accolite.datamodel.ColumnDetail;
 import com.accolite.datamodel.Model;
 import com.accolite.datamodel.TableDetail;
-import com.accolite.utility.ExtractJarUtil;
+import com.accolite.Utility.*;
 
 public class HibernateAnnotationParser {
 
