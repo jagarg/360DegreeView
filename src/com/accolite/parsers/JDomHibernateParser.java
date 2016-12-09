@@ -19,11 +19,11 @@ import com.accolite.datamodel.TableDetail;
 public class JDomHibernateParser {
 	
 	public static void main(String[] args) {
-		String dirName = "C:\\AnkitM\\DR\\sample_hibernate_xml\\sample_hibernate_xml1";
+		String dirName = "C:\\AnkitM\\DR\\sample_hibernate_xml\\sample_hibernate_xml2";
 		//File inputFile = new File("C:\\AnkitM\\DR\\sample_hibernate_xml\\hibernateSample4.xml");
 		Model model = new Model();
 		parseXml(listOfFiles(dirName, new ArrayList<String>()), model);
-		// OrientLoader.initiateLoad(model);
+		OrientLoader.initiateLoad(model);
 	}
 	
 	public static void parseXml(ArrayList<String> files, Model model ) {
@@ -34,7 +34,7 @@ public class JDomHibernateParser {
 			SAXBuilder saxBuilder = new SAXBuilder();
 			Document document = saxBuilder.build(inputFile);
 
-			System.out.println("Root element :" + document.getRootElement().getName());
+			//System.out.println("Root element :" + document.getRootElement().getName());
 			Element hibernateMappingElement = document.getRootElement();
 
 			if (hibernateMappingElement.getName().equals("hibernate-mapping")) {
@@ -44,8 +44,8 @@ public class JDomHibernateParser {
 				if (classElement != null) {
 					String className = classElement.getAttributeValue("name");
 					String tableName = classElement.getAttributeValue("table");
-					System.out.println("** className: " + className);
-					System.out.println("** tableName: " + tableName);
+					//System.out.println("** className: " + className);
+					//System.out.println("** tableName: " + tableName);
 					//System.out.println("** catalog: " + classElement.getAttributeValue("catalog"));
 					
 					TableDetail table = model.getTableMap().get(tableName);
@@ -59,11 +59,11 @@ public class JDomHibernateParser {
 					// not setting catalog as of now
 					
 					List<Element> propertyList = classElement.getChildren();
-					System.out.println("----------------------------");
+					//System.out.println("----------------------------");
 
 					for (int temp = 0; temp < propertyList.size(); temp++) {
 						Element property = propertyList.get(temp);
-						System.out.println("\nCurrent Element :" + property.getName());
+						//System.out.println("\nCurrent Element :" + property.getName());
 						
 						if (property.getName().equals("id") || property.getName().equals("property")) {
 							ColumnDetail columnDetail = new ColumnDetail();
@@ -71,7 +71,7 @@ public class JDomHibernateParser {
 								columnDetail.setPrimaryKey(true);								
 							}
 							String columnName = property.getAttributeValue("column") != null ? property.getAttributeValue("column") : (property.getChild("column")!=null ? property.getChild("column").getAttributeValue("name"):null);
-							System.out.println("** columnName: " + columnName);
+							//System.out.println("** columnName: " + columnName);
 							//System.out.println("** type: " + property.getAttributeValue("type"));
 							columnDetail.setColumnName(columnName);
 							columnDetail.setLocalFieldName(property.getAttributeValue("name"));
@@ -97,7 +97,7 @@ public class JDomHibernateParser {
 						Element oneToMany = property.getChild("one-to-many");
 						if(property.getName().equals("set") && property.getAttributeValue("inverse").equals("true") && oneToMany != null ){
 							String newTableName = property.getAttributeValue("table");
-							System.out.println("newTableName "+newTableName);
+							//System.out.println("newTableName "+newTableName);
 							TableDetail newTable = model.getTableMap().get(newTableName);
 							if(newTable == null){
 								newTable = new TableDetail();
@@ -134,7 +134,7 @@ public class JDomHibernateParser {
 						// many-to-many relationship + join table + no extra column
 						Element manyToMany = property.getChild("many-to-many");
 						if(property.getName().equals("set") && manyToMany != null ){
-							System.out.println("** many to many realtionship");
+							//System.out.println("** many to many realtionship");
 							String joinTableName = property.getAttributeValue("table");
 							TableDetail joinTable = model.getTableMap().get(joinTableName);
 							if(joinTable == null){
@@ -197,7 +197,7 @@ public class JDomHibernateParser {
 			ioe.printStackTrace();
 		}
 	}
-		System.out.println("model size: "+model.getTableMap().size());
+		//System.out.println("model size: "+model.getTableMap().size());
 		
 		HashMap<String, TableDetail> tableMap = model.getTableMap();
 		for (Entry<String, TableDetail> entry : tableMap.entrySet())
@@ -208,6 +208,7 @@ public class JDomHibernateParser {
 		
 	}
 	
+	// TODO AM - delete this method and try to use method from ExtractJarUtil
 	public static ArrayList<String> listOfFiles(String directoryName, ArrayList<String> files) {
 	    File directory = new File(directoryName);
 
