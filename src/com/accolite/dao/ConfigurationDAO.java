@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import com.accolite.controller.ERDController;
 import com.accolite.datamodel.Configuration;
 import com.accolite.orient.OrientLoader;
 import com.google.gson.Gson;
@@ -19,7 +20,7 @@ public class ConfigurationDAO {
 	@SuppressWarnings("finally")
 	public static boolean addConfiguration(Configuration configuration)
 	{
-		OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");
+		OrientGraphFactory factory = OrientLoader.factory(ERDController.ADMIN_DATABSE,null,null);
 		OrientGraph graph = factory.getTx();
 		Gson gson = new Gson();
 		
@@ -50,7 +51,7 @@ public class ConfigurationDAO {
 	@SuppressWarnings("finally")
 	public static ArrayList<Vertex> listConfiguration()
 	{
-		OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");
+		OrientGraphFactory factory = OrientLoader.factory(ERDController.ADMIN_DATABSE,null,null);
 		OrientGraph graph = factory.getTx();
 
 		String query = "SELECT FROM CONFIGURATION";
@@ -84,7 +85,7 @@ public class ConfigurationDAO {
 	@SuppressWarnings("finally")
 	public static ArrayList<String> listDB()
 	{
-		OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");
+		OrientGraphFactory factory = OrientLoader.factory(ERDController.ADMIN_DATABSE,null,null);
 		OrientGraph graph = factory.getTx();
 
 		String query = "SELECT databaseName FROM CONFIGURATION";

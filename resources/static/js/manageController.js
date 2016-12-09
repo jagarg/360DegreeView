@@ -47,10 +47,10 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 	$scope.welcomeNext=true;
 	$scope.databaseNext=true;
 	$scope.disabledatabase=true;
-	$scope.disableschema=true;
+	//$scope.disableschema=true;
 	$scope.disableschemadetails=true;
 	$scope.disablecomplete=true;
-	$scope.schemaOptions = ['JDO','HIBERNATE','RDBMS','CUSTOM JARS'];
+	$scope.schemaOptions = ['JDO','HIBERNATE','ORACLE','MYSQL','CUSTOM JAR'];
 	
 	$scope.addConfig=false;		// 1
 	$scope.viewConfig=true;	// 0
@@ -96,13 +96,13 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 		
 		var data = {
 			configName: $scope.newConfigName,
-			dbName: $scope.dbName,
+			databaseName: $scope.dbName,
 			dbUserName:$scope.dbuser,
 			dbPassword:$scope.dbpasswd,
 			schemaName:$scope.schemaSelect,
 			schemaDetail:$scope.newConfigName
         };
-    
+        
         var config = {
             headers : {
                 'Content-Type': 'application/json'
@@ -126,6 +126,7 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 
         }).finally(function() {
         // called no matter success or failure
+        	Configuration = restGET(configList);
             return response;
       });
 	

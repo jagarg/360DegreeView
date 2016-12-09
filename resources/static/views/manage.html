@@ -77,104 +77,38 @@
 			    </div>
 			    </md-content>			    
 			    
-			    <!-- JDO -->
-			    <div ng-show="schemaSelect=='JDO'">
+			    <!-- JDO or HIBERNATE -->
+			    <div ng-show="schemaSelect=='JDO' || schemaSelect=='HIBERNATE'">
 			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
 			            <div layout="row">
 							<md-input-container>
-			                	<input type="file" accept=".zip,.jar" file-model = "jdoFile">
-			                	<div>JDO files zip</div>
+			                	<input type="file" accept=".zip" file-model = "fileOne">
+			                	<div>Zip file</div>
 			                </md-input-container>
-			                
 			                <md-input-container>
-			                	<input type="file" accept=".zip,.jar" file-model ="jarFile">
-			                	<div>Source Code zip</div>
-			                </md-input-container>
-			            </div> 
-			                
-			     		<div layout="row">
-							<md-input-container>
-								<button ng-click="uploadFile()">upload me</button>
+								<button ng-click="uploadFile()">Upload</button>
 							</md-input-container>
-			            </div>   
-			        </md-content>
-					<!-- form method="POST" enctype="multipart/form-data" action="/upload">
-					  File to upload: <input type="file" name="upfile"><br/>
-					  <br/>
-					  <input type="submit" value="Press"> to upload the file!
-					</form-->			        
+			            </div> 
+			        </md-content>			        
+		       </div>
+
+		       <!-- ORACLE or MYSQL -->
+		       
+		       <div ng-show="schemaSelect=='JDO' || schemaSelect=='HIBERNATE'">
+			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
+			            <div layout="row">
+							<md-input-container>
+			                	<input type="file" accept=".zip" file-model = "fileOne">
+			                	<div>Zip file</div>
+			                </md-input-container>
+			                <md-input-container>
+								<button ng-click="uploadFile()">Upload</button>
+							</md-input-container>
+			            </div> 
+			        </md-content>			        
 		       </div>
 		       
-		       <!-- form ng-show="opt=='HIBERNATE'">
-			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
-			            <div layout="row">
-							<md-input-container>
-			                	<input type="file" accept=".zip,.jar">
-			                	<div>Hibernate files zip</div>
-			                </md-input-container>
-			                
-			                <md-input-container>
-			                	<input type="file" accept=".zip,.jar">
-			                	<div>Source Code zip</div>
-			                </md-input-container>
-			            </div>   
-			        </md-content>
-		       </form>
-		       
-		       <form ng-show="opt=='RDBMS'">
-			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
-			            <div layout="row">
-							<md-input-container>
-			                	<label>DataBase</label>
-					            <md-select ng-model="rdbmsSelect">
-					              <md-option>Oracle</md-option>
-					              <md-option>MySQL</md-option>
-					            </md-select>
-			                </md-input-container>
-							
-							<md-input-container>
-			                	<label>Host Name</label>
-								<input type="text">
-			                </md-input-container>		
-			                
-							<md-input-container>
-			                	<label>Port</label>
-								<input type="number">
-			                </md-input-container>
-			                
-							<md-input-container>
-			                	<label>Database</label>
-								<input type="text">
-			                </md-input-container>		 
-			                
-			                <md-input-container>
-			                	<label>User Name</label>
-								<input type="text">
-			                </md-input-container>
-			                
-							<md-input-container>
-			                	<label>Password</label>
-								<input type="password">
-			                </md-input-container>			                
-			            </div>   
-			        </md-content>
-		       </form>
-		       
-		       <form ng-show="opt=='CUSTOM JARS'">
-			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
-			            <div layout="row">
-							<md-input-container>
-			                	<input type="file" accept=".zip,.jar">
-			                	<div>Hibernate files zip</div>
-			                </md-input-container>
-			                
-			                <md-input-container>
-			                	<input type="file" accept=".zip,.jar">
-			                	<div>Source Code zip</div>
-			                </md-input-container>
-			            </div>   
-			        </md-content>
-		       </form-->
+		       <!-- CUSTOM JAR/ZIP -->
           </div>
         </md-content>
         <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
@@ -184,7 +118,7 @@
       </md-tab>    
       
       <md-tab label="Complete" ng-disabled="disablecomplete">
-        <md-content class="md-padding">
+      	<md-content class="md-padding">
         <h1 class="md-display-2">Summary </h1>
         <div layout="row" layout-wrap>
   			<div flex="50">

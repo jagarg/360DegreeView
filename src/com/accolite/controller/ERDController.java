@@ -41,7 +41,9 @@ import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 public class ERDController {
 	
 	final static Logger logger = Logger.getLogger(ERDController.class);
-
+	public static String DBPATH = "plocal:D:\\orientdb-community-2.2.13\\databases\\";
+	public static String ADMIN_DATABSE = DBPATH+"appDB";
+	
 	@RequestMapping("/")
 	public String welcome() {
 		return "index";
@@ -59,7 +61,7 @@ public class ERDController {
 	    boolean result =  ConfigurationService.addConfiguration(configuration);
 	    
 	    
-	    // Process the data
+	    // Process the data and create a DataBase with details provided in configuration
 	    switch(configuration.getSchemaName())
 	    {
 	    	case "JDO":
@@ -225,7 +227,7 @@ public class ERDController {
 	 private static void init() {
 		 logger.info("Init ....");
 
-			OrientGraphFactory factory = OrientLoader.factory("plocal:D:\\orientdb-community-2.2.13\\databases\\appDB");			
+			OrientGraphFactory factory = OrientLoader.factory(ADMIN_DATABSE,null,null);			
 			OrientGraphNoTx gph = factory.getNoTx();
 	    	try
 	    	{			

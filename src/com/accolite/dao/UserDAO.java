@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.accolite.controller.ERDController;
 import com.accolite.orient.AllPaths;
 import com.accolite.orient.OrientLoader;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
@@ -18,9 +19,8 @@ public class UserDAO {
 
 	@SuppressWarnings("finally")
 	public static ArrayList<String> listTable(String database) {
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
-				+ database;
-		OrientGraphFactory factory = OrientLoader.factory(dbName);
+		String dbName = ERDController.DBPATH+ database;
+		OrientGraphFactory factory = OrientLoader.factory(dbName,null,null);
 		OrientGraph graph = factory.getTx();
 
 		String query = "SELECT tableName FROM TABLE";
@@ -53,9 +53,8 @@ public class UserDAO {
 	@SuppressWarnings("finally")
 	public static ArrayList<ArrayList<Object>> getTable(String database,
 			String table) {
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
-				+ database;
-		OrientGraphFactory factory = OrientLoader.factory(dbName);
+		String dbName = ERDController.DBPATH+ database;
+		OrientGraphFactory factory = OrientLoader.factory(dbName,null,null);
 		OrientGraph graph = factory.getTx();
 
 		String query = "SELECT" + " out().columnName as columns,"
@@ -97,9 +96,8 @@ public class UserDAO {
 	@SuppressWarnings("finally")
 	public static ArrayList<String> getMappings(String database,
 			String tableName) {
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
-				+ database;
-		OrientGraphFactory factory = OrientLoader.factory(dbName);
+		String dbName = ERDController.DBPATH+ database;
+		OrientGraphFactory factory = OrientLoader.factory(dbName,null,null);
 		OrientGraph graph = factory.getTx();
 		String query = "select details as path from COLUMN "
 				+ "where foreignKey = true and " + "(localTableName='"
@@ -134,9 +132,8 @@ public class UserDAO {
 	@SuppressWarnings("finally")
 	public static ArrayList<ArrayList<Object>> getMappings(String database,
 			String table1, String table2) {
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
-				+ database;
-		OrientGraphFactory factory = OrientLoader.factory(dbName);
+		String dbName = ERDController.DBPATH+ database;
+		OrientGraphFactory factory = OrientLoader.factory(dbName,null,null);
 		OrientGraph graph = factory.getTx();
 		String query = "select path.details from " + "(select shortestPath ( "
 				+ "(select from TABLE where tableName = '" + table1 + "'), "
@@ -170,9 +167,8 @@ public class UserDAO {
 
 	@SuppressWarnings("finally")
 	public static ArrayList<String> getAllPaths(String database, String tables) {
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
-				+ database;
-		OrientGraphFactory factory = OrientLoader.factory(dbName);
+		String dbName = ERDController.DBPATH+ database;
+		OrientGraphFactory factory = OrientLoader.factory(dbName,null,null);
 		OrientGraph graph = factory.getTx();
 
 		List<String> ridList = getTableRid(database, tables);
@@ -210,9 +206,8 @@ public class UserDAO {
 
 	@SuppressWarnings("finally")
 	public static ArrayList<String> getTableRid(String database, String tables) {
-		String dbName = "plocal:D:\\orientdb-community-2.2.13\\databases\\"
-				+ database;
-		OrientGraphFactory factory = OrientLoader.factory(dbName);
+		String dbName = ERDController.DBPATH+ database;
+		OrientGraphFactory factory = OrientLoader.factory(dbName,null,null);
 		OrientGraph graph = factory.getTx();
 		String query = "select @rid from table where tableName in [";
 
@@ -247,5 +242,4 @@ public class UserDAO {
 			return list;
 		}
 	}
-
 }

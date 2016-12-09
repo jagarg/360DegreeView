@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.accolite.controller.ERDController;
 import com.accolite.datamodel.ColumnDetail;
 import com.accolite.datamodel.Model;
 import com.accolite.datamodel.TableDetail;
@@ -20,10 +21,8 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 
 public class OrientLoader {
 
-	//private static String DATABASE = "plocal:D:\\orientdb-community-2.1.8\\databases\\JDO";
-	private static String DATABASE ="plocal:D:\\orientdb-community-2.2.13\\databases\\testDB";
+	private static String DATABASE =ERDController.DBPATH+"testDB";
 	final static Logger logger = Logger.getLogger(OrientLoader.class);
-	//private static final Logger logger = LoggerFactory.getLogger(OrientLoader.class);
 	
 	public static void initiateLoad(Model model) {
 		
@@ -31,7 +30,7 @@ public class OrientLoader {
 		{
 			try 
 			{
-				OrientGraphFactory factory = factory(DATABASE);
+				OrientGraphFactory factory = factory(DATABASE,null,null);
 				
 				System.out.println("Data load initiated !!");
 				
@@ -58,9 +57,18 @@ public class OrientLoader {
 		}
 	}
 	
-	public static OrientGraphFactory factory(String Database) {
+	public static OrientGraphFactory factory(String Database,String username,String password) {
 		
-		OrientGraphFactory factory = new OrientGraphFactory(Database).setupPool(1,10);
+		String defaultName = "admin";
+		String defaultPassword = "admin";
+		
+		if(null != username && !username.isEmpty())
+			defaultName = username;
+		
+		if(null != password && !password.isEmpty())
+			defaultPassword = password;
+		
+		OrientGraphFactory factory = new OrientGraphFactory(Database,defaultName,defaultPassword).setupPool(1,10);
         
 		return factory;
     }
