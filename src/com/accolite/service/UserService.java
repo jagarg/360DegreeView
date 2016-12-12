@@ -79,17 +79,18 @@ public class UserService {
 						newPath.setIn(pathArr[2]);
 					if (!pathArr[3].equalsIgnoreCase("NULL"))
 						newPath.setTargetColumn(pathArr[3]);
+					newPath.setRid("#"+data.indexOf(path));
 					tableMapping.getEdges().add(newPath);
 				}
 		} else {
 			for (int i = 0; i < tableList.length - 1; i++) {
 				for (int j = i + 1; j < tableList.length; j++) {
 
-					ArrayList<ArrayList<Object>> data = UserDAO.getMappings(
+					ArrayList<String> data = UserDAO.getMappings(
 							database, tableList[i], tableList[j]);
 
 					// fetch path info
-					for (Object path : data.get(0)) {
+					for (String path : data) {
 						if (path != null) {
 							Edge newPath = new Edge();
 							String[] pathArr = path.toString().split(" ");
@@ -101,6 +102,7 @@ public class UserService {
 								newPath.setIn(pathArr[2]);
 							if (!pathArr[3].equalsIgnoreCase("NULL"))
 								newPath.setTargetColumn(pathArr[3]);
+							newPath.setRid("#"+data.indexOf(path));
 							tableMapping.getEdges().add(newPath);
 						}
 					}
@@ -134,6 +136,7 @@ public class UserService {
 					newPath.setIn(pathArr[2]);
 				if (!pathArr[3].equalsIgnoreCase("NULL"))
 					newPath.setTargetColumn(pathArr[3]);
+				newPath.setRid("#"+data.indexOf(path1));
 				paths.add(newPath);
 			}
 		}

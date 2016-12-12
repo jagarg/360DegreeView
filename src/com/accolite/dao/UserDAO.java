@@ -1,9 +1,12 @@
 package com.accolite.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import scala.remote;
 
 import com.accolite.controller.ERDController;
 import com.accolite.orient.AllPaths;
@@ -130,7 +133,7 @@ public class UserDAO {
 	}
 
 	@SuppressWarnings("finally")
-	public static ArrayList<ArrayList<Object>> getMappings(String database,
+	public static ArrayList<String> getMappings(String database,
 			String table1, String table2) {
 		String dbName = ERDController.DBPATH+ database;
 		OrientGraphFactory factory = OrientLoader.factory(dbName,null,null);
@@ -140,7 +143,7 @@ public class UserDAO {
 				+ "(select from TABLE where tableName = '" + table2 + "')) "
 				+ "as path)";
 
-		ArrayList<ArrayList<Object>> list = null;
+		ArrayList<String> list = new ArrayList<>();
 
 		try {
 			OCommandSQL tableQR = new OCommandSQL(query);
@@ -148,10 +151,11 @@ public class UserDAO {
 
 			Iterable<Vertex> dbList = graph.command(tableQR).execute();
 			logger.debug("\n Return : " + database.toString());
-			list = new ArrayList<>();
-
+			
 			for (Vertex vertex : dbList) {
-				list.add(vertex.getProperty("path"));
+				if (vertex.getProperty("path") != null){
+					list = vertex.getProperty("path");
+				}
 			}
 
 			graph.commit();
@@ -161,6 +165,7 @@ public class UserDAO {
 		} finally {
 			graph.shutdown();
 			factory.close();
+			list.removeAll(Collections.singleton(null));
 			return list;
 		}
 	}

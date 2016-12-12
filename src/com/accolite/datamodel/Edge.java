@@ -1,12 +1,15 @@
 package com.accolite.datamodel;
 
 public class Edge {
+	String type;
+	String rid;
 	String out;
 	String sourceColumn;
 	String in;
 	String targetColumn;
 	
 	public Edge(){
+		type="Paths";
 		out="";
 		sourceColumn="";
 		in="";
@@ -37,6 +40,18 @@ public class Edge {
 		this.targetColumn = targtColumn;
 	}
 	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getRid() {
+		return rid;
+	}
+	public void setRid(String rid) {
+		this.rid = rid;
+	}
 	@Override
 	public boolean equals(Object o){
 		if (o instanceof Edge){
