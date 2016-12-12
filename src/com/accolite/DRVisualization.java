@@ -28,11 +28,11 @@ public class DRVisualization {
 		
 		String jarPath = "C:/Users/hsareen/Desktop/Jay/jar";//C:/dev/gc/submodules/runtime/lib/common";
 		
-		Utility.extractJarAndZipFiles(jarPath,unJarPath,".jdo");
+	//	Utility.extractJarAndZipFiles(jarPath,unJarPath,".jdo");
 		
 		
 		
-		model = JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarPath, new ArrayList<String>(),"jdo"));
+		//model = JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarPath, new ArrayList<String>(),"jdo"));
 		
 		//Enrich the model
 		

@@ -3,6 +3,8 @@ package com.accolite.Utility;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
@@ -14,16 +16,16 @@ import com.accolite.datamodel.Model;
 import com.accolite.datamodel.TableDetail;
 
 public class Utility {
-	public static void extractJarAndZipFiles(String jarPath,String unJarPath,String fileType) {
+	public static void extractJarAndZipFiles(String jarPath,String unJarPath,String classPath,String fileType) {
 		long start = System.currentTimeMillis();
-		extractJarAndZipFiles( jarPath, unJarPath, fileType,false) ;
+		extractJarAndZipFiles( jarPath, unJarPath, classPath, fileType,false) ;
 		long end = System.currentTimeMillis();
 		System.out.println("Decompression for started at : " + start);
 		System.out.println("UDecompression for ended at : " + end);
 		System.out.println("Time taken to decompress : " + (end - start) / 1000 + " seconds");
 	}
 	
-	public static void extractJarAndZipFiles(String jarPath,String unJarPath,String fileType,boolean flag) {
+	public static void extractJarAndZipFiles(String jarPath,String unJarPath,String classPath,String fileType,boolean flag) {
 		File directory = new File(jarPath);
 		File[] fList = directory.listFiles();
 		
@@ -31,11 +33,11 @@ public class Utility {
 	
 		for (File file : fList) {
 			if(file.getName().contains(".jar") || file.getName().contains(".zip"))
-			executorService.execute( new ExtractJarAndZip(unJarPath, file,fileType));
+			executorService.execute( new ExtractJarAndZip(unJarPath, classPath, file,fileType));
 		}
 		try {
 			executorService.shutdown();
-			executorService.awaitTermination(30, TimeUnit.MINUTES);
+			executorService.awaitTermination(10, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,13 +59,14 @@ public class Utility {
 		return files;
 	}
 	
-	public static void enrichJdoModel(Model model) throws ClassNotFoundException,  SecurityException, MalformedURLException{
-		/*File file = new File("C://dev//gc//submodules//pacific-commerce//target//classes");
+	public static void enrichJdoModel(Model model, String classPath) throws ClassNotFoundException,  SecurityException, MalformedURLException{
+		File file = new File(classPath);
 		URL url = file.toURI().toURL();
 		URL[] urls = new URL[]{url};
 
+		@SuppressWarnings("resource")
 		ClassLoader cl = new URLClassLoader(urls);
-		*/
+		
 
 		for(Entry<String,TableDetail> tableEntry: model.getTableMap().entrySet()){
 			//cl.loadClass("com.digitalriver.system.BaseBusinessObject");
@@ -73,7 +76,7 @@ public class Utility {
 				if(column.isForeignKey()){
 					//System.out.println(table.getTableName()+"----------------------------------"+table.getClassName());
 					//System.out.println(column.getLocalFieldName());
-					Class<?> localClass = Class.forName(table.getClassName());
+					Class<?> localClass = cl.loadClass(table.getClassName());// Class.forName(table.getClassName());
 					Field s = getField(localClass,column.getLocalFieldName());
 					
 					String fieldType[] = s.getType().toString().split(" ");
@@ -107,8 +110,6 @@ public class Utility {
 				}
 			}
 		}
-		
-		
 	}
 	
 	//recursively trying to find the field in the class hierarchy 
@@ -118,7 +119,7 @@ public class Utility {
 	        try {
 	            field = clazz.getDeclaredField(name);
 	        } catch (NoSuchFieldException e) {
-	        	//Do something
+	        	//to do
 	        }
 	        clazz = clazz.getSuperclass();
 	    }

@@ -23,11 +23,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.accolite.Utility.Utility;
 import com.accolite.datamodel.Configuration;
 import com.accolite.datamodel.DatabaseDetail;
+import com.accolite.datamodel.Model;
 import com.accolite.datamodel.Table;
 import com.accolite.datamodel.TableMapping;
 import com.accolite.orient.OrientLoader;
+import com.accolite.parsers.JdoXmlParser;
 import com.accolite.service.ConfigurationService;
 import com.accolite.service.UserService;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
@@ -42,6 +45,7 @@ public class ERDController {
 	
 	final static Logger logger = Logger.getLogger(ERDController.class);
 	public static String DBPATH = "plocal:D:\\orientdb-community-2.2.13\\databases\\";
+	//"plocal:C:\\Users\\hsareen\\Desktop\\db\\orientdb-community-2.2.13\\databases\\";
 	public static String ADMIN_DATABSE = DBPATH+"appDB";
 	
 	@RequestMapping("/")
@@ -59,16 +63,32 @@ public class ERDController {
 	    // Create new entry for Configuration
 
 	    boolean result =  ConfigurationService.addConfiguration(configuration);
-	    
+
+	    String database = configuration.getDatabaseName();
+	    String dbUsername = configuration.getDbUserName();
+	    String dbPassword = configuration.getDbPassword();
+	    Model model = new Model();
 	    
 	    // Process the data and create a DataBase with details provided in configuration
 	    switch(configuration.getSchemaName())
 	    {
 	    	case "JDO":
+	    		//create unjar/unip folder
+	    		File unJarDirectory = new File(fileDirectory.getAbsolutePath()+"//unjar");
+	    		unJarDirectory.mkdir();
+	    		
+	    		//create unjar/unip folder
+	    		File classDirectory = new File(fileDirectory.getAbsolutePath()+"//classes");
+	    		classDirectory.mkdir();
+	    		
+	    		//calling unjar utility
+	    		Utility.extractJarAndZipFiles(fileDirectory.getAbsolutePath(),unJarDirectory.getAbsolutePath(),classDirectory.getAbsolutePath(),".jdo");
+	    		
+	    		//parse the config files
+	    		model = JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarDirectory.getAbsolutePath(), new ArrayList<String>(),"jdo"),classDirectory.getAbsolutePath());
 	    		// To Do - Jay
 	    		// Process fileDirectory for zip and jar
 	    		logger.info("Processing JDO files ...");
-	    	break;
 	    	
 	    	case "HIBERNATE":
 				// To Do - Ankit
@@ -93,6 +113,7 @@ public class ERDController {
 	    	break;
 	    }	    
 	    
+	    OrientLoader.initiateLoad(model);
 	    
 	    // Delete fileDirectory
 	    try

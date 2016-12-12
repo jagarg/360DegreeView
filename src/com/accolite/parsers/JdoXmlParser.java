@@ -25,7 +25,7 @@ public class JdoXmlParser {
 	static boolean table_found;
 	static ColumnDetail virtualPrimaryKey = null;
 
-	public static Model ParseJdoXml(ArrayList<String> files) {
+	public static Model ParseJdoXml(ArrayList<String> files,String classPath) {
 		Model model = new Model();
 		for (String file : files) {
 			TableDetail table = new TableDetail();
@@ -65,6 +65,7 @@ public class JdoXmlParser {
 						System.out.println(
 								"Table Information and Class information not present. Skipping file : " + file);
 					}
+					continue;
 				}
 
 				NodeList classFieldNodes = classElement.getElementsByTagName("field");
@@ -85,7 +86,7 @@ public class JdoXmlParser {
 		
 		//enrich the jdo Model
 		try {
-			Utility.enrichJdoModel(model);
+			Utility.enrichJdoModel(model,classPath);
 		} catch (ClassNotFoundException | SecurityException e) {
 			e.printStackTrace();
 		} catch (MalformedURLException e) {

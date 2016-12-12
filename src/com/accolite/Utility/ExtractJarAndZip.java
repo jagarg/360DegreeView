@@ -2,6 +2,8 @@ package com.accolite.Utility;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.util.Enumeration;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -12,9 +14,11 @@ public class ExtractJarAndZip implements Runnable {
 	File file;
 	String unJarPath;
 	String fileType;
+	String classPath;
 
-	public ExtractJarAndZip(String unJarPath, File fileName,String fileType) {
+	public ExtractJarAndZip(String unJarPath, String classPath, File fileName, String fileType) {
 		this.unJarPath = unJarPath;
+		this.classPath = classPath;
 		this.file = fileName;
 		this.fileType = fileType;
 	}
@@ -35,7 +39,7 @@ public class ExtractJarAndZip implements Runnable {
 					compressedFile	= new ZipFile(file);
 					jarOrzip = ".zip";
 				}
-
+				File classDirectory = new File(classPath);
 				File unJarDirectory = new File(unJarPath
 						+ "/"
 						+ file
@@ -49,24 +53,41 @@ public class ExtractJarAndZip implements Runnable {
 				while (entries.hasMoreElements()) {
 					ZipEntry entry = entries.nextElement();
 
-					if (entry.getName().contains(fileType) || entry.getName().contains(".jar") ) {
-
-						java.io.File fl = new java.io.File(unJarDirectory,
-								entry.getName());
-						if (!fl.exists()) {
-							fl.getParentFile().mkdirs();
+					if (entry.getName().contains(fileType) || entry.getName().contains(".jar") || entry.getName().contains(".class") ) {
+						java.io.File fl = null;
+						if(entry.getName().contains(".class")){
+							fl = new java.io.File(classDirectory,
+									entry.getName());
+							if (!fl.exists()) {
+								fl.getParentFile().mkdirs();
+								fl = new java.io.File(classDirectory,
+										entry.getName());
+							}
+						}else{
 							fl = new java.io.File(unJarDirectory,
 									entry.getName());
+							if (!fl.exists()) {
+								fl.getParentFile().mkdirs();
+								fl = new java.io.File(unJarDirectory,
+										entry.getName());
+							}
 						}
+						
 						if (entry.isDirectory()) {
 							continue;
 						}
+						
 						java.io.InputStream is = compressedFile.getInputStream(entry);
-						java.io.FileOutputStream fo = new java.io.FileOutputStream(
-								fl);
-						while (is.available() > 0) {
-							fo.write(is.read());
-						}
+						java.io.FileOutputStream fo = new java.io.FileOutputStream(fl);
+						
+						byte[] buffer = new byte[2048];
+				        int    tmp    = 0;
+				  
+				        while ((tmp = is.read(buffer)) != -1) 
+				        {
+				          fo.write(buffer, 0, tmp);
+				        }
+				        
 						fo.close();
 						is.close();
 						
@@ -78,8 +99,9 @@ public class ExtractJarAndZip implements Runnable {
 						continue;
 
 				}
-				if(isZipPresent)
-					Utility.extractJarAndZipFiles(unJarDirectory.toString(),unJarPath,fileType,false);
+				if(isZipPresent){
+					Utility.extractJarAndZipFiles(unJarDirectory.toString(),unJarPath,classPath,fileType,false);
+				}
 				// delete empty directory
 				if (unJarDirectory.list().length == 0)
 					unJarDirectory.delete();
