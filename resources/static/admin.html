@@ -25,32 +25,44 @@
           
         <style>
         md-input-container {
-    width:200%;
-}
+		    width:200%;
+		}
+		
+		.button-default{
+		    background-color:blue
+		}
+		
+		.button-success{
+		    background-color:green
+		}
+		
+		.button-failed{
+		    background-color:red
+		}
 
-.spinner-overlay {
-    background-color: #333;
-    opacity: 0.8;
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    z-index: 100;
-    height: 100%;
-    width: 100%;
-    background-image: url('../images/hourglass.gif');
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.disabled {
-    pointer-events: none;
-    cursor: default;
-}
-
-.enabled {
-    pointer-events: visible;
-    cursor: auto;
-}
+		.spinner-overlay {
+		    background-color: #333;
+		    opacity: 0.8;
+		    position: fixed;
+		    left: 0px;
+		    top: 0px;
+		    z-index: 100;
+		    height: 100%;
+		    width: 100%;
+		    background-image: url('../images/hourglass.gif');
+		    background-position: center;
+		    background-repeat: no-repeat;
+		}
+		
+		.disabled {
+		    pointer-events: none;
+		    cursor: default;
+		}
+		
+		.enabled {
+		    pointer-events: visible;
+		    cursor: auto;
+		}
         </style>
 </head>
 <body ng-controller="mainController">

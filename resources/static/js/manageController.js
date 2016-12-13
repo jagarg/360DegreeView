@@ -45,12 +45,19 @@ app.service('fileUpload', ['$http', function ($http) {
 app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sce,$rootScope) {
 
 	var details = "";
+	$scope.beforecomplete = true;
 	$scope.welcomeNext=true;
 	$scope.databaseNext=true;
 	$scope.disableschema=true;
 	$scope.disableschemadetails=true;
 	$scope.disablecomplete=true;
 	$scope.schemaOptions = ['JDO','HIBERNATE','ORACLE','MYSQL','CUSTOM JAR'];
+	$scope.states = ['DEFAULT', 'PENDING', 'SUCCESS', 'FAILED'];
+	$scope.text = ['Test Connection', 'Connecting', 'Connection Sucessfull', 'Connection Failed'];
+	$scope.btn0 = {
+	        state: $scope.states[0],
+	        buttonText: $scope.text[0]
+	};
 	
 	$scope.addConfig=false;		// 1
 	$scope.viewConfig=true;	// 0
@@ -84,6 +91,10 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 	
 	$scope.testconnection=function() {
 		
+		// Change text to "Connecting"
+		$scope.btn0.state=$scope.states[1];
+		$scope.btn0.buttonText=$scope.text[1];
+		
 		if($scope.schemaSelect == 'ORACLE')
 		{
 			details = {
@@ -114,11 +125,28 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 	        $http.post('/testJDBC/', details, config)
 	        .success(function (response) {
 	        	console.log(response);
-	        	displaySuccess("JDBC success !!!");
+	        	//$rootScope.disableDIV = false;
+	        	
+	        	if(response)
+	        	{
+	        		$scope.beforecomplete=false;
+	        		$scope.btn0.state=$scope.states[2];
+	        		$scope.btn0.buttonText=$scope.text[2];
+	        	}
+	        	else
+	        	{
+	        		$scope.beforecomplete=true;
+	        		$scope.btn0.state=$scope.states[3];
+	        		$scope.btn0.buttonText=$scope.text[3];
+	        	}
+	        	
 	        })
 	        .error(function (response) {
 	            console.log(response);
-	            displayError("JDBC failed !!!");
+	            
+	            $scope.beforecomplete=true;
+	            $scope.btn0.state=$scope.states[3];
+	            $scope.btn0.buttonText=$scope.text[3];
 
 	        }).finally(function() {
 	        // called no matter success or failure
@@ -194,19 +222,28 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 		{
 			if(1 == old || current == 0)
 			{
+				$scope.beforecomplete=true;
 				$scope.disableschema=true;
 				$scope.disablecomplete=true;
 				clearAll();
 			}
 			else if(2 == old || current == 1)
 			{
+				$scope.beforecomplete=true;
 				$scope.disablecomplete=true;
+				$scope.btn0.state=$scope.states[0];
+				$scope.btn0.buttonText=$scope.text[0];
 			}				
 		}
 		else
 		{
 			if(0 == old && 1 == current)
+			{
+				$scope.beforecomplete=true;
 				$scope.disableschema=false;
+				$scope.btn0.state=$scope.states[0];
+				$scope.btn0.buttonText=$scope.text[0];
+			}
 			else if(1 == old && 2 == current)
 			{
 				$scope.disablecomplete=false;
@@ -333,6 +370,7 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
     } 
     
     $scope.uploadFile = function(){
+    	$rootScope.disableDIV = true;
         var fileone = $scope.fileOne;
         
         var fd = new FormData();
@@ -349,10 +387,14 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
         })
         .success(function(response){
         	console.log(response);
+        	$rootScope.disableDIV = false;
+        	$scope.beforecomplete=false;
         	displaySuccess("File uploaded !!");
         })
         .error(function(response){
         	console.log(response);
+        	$rootScope.disableDIV = false;
+        	$scope.beforecomplete=true;
         	displayError("File not uploaded !!");
         	
         }).finally(function() {

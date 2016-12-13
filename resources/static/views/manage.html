@@ -62,37 +62,12 @@
 
 		       <!-- ORACLE or MYSQL -->
 		       
-		       <div ng-show="schemaSelect=='ORACLE' || schemaSelect=='MYSQL'">
+		       <div ng-show="schemaSelect=='ORACLE' || schemaSelect=='MYSQL'" style="height:45%">
 			        <md-content md-theme="docs-dark" class="md-padding" layout="column"> 
-						<div flex="50" ng-init="host='localhost';port=8080;databaseName='testDB';userName='admin';password='admin'">
-  							<div class="well well-lg" style="background-color : black" ng-show="schemaSelect=='ORACLE'">
- 									<p>DRIVER CLASS = oracle.jdbc.driver.OracleDriver</p>
-									<p>URL = jdbc:oracle:thin:@
-										<span class="badge" style="background-color:yellow; color:black">{{host}}</span>:
-										<span class="badge" style="background-color:yellow; color:black">{{port}}</span>:
-										<span class="badge" style="background-color:yellow; color:black">{{databaseName}}</span>
-									</p>
-									<p>USERNAME =<span class="badge" style="background-color:yellow; color:black">{{userName}}</span></p>
-									<p>PASSWORD =<span class="badge" style="background-color:yellow; color:black">{{password}}</span></p>
-								</div>
-								<div class="well well-lg" style="background-color : black" ng-show="schemaSelect=='MYSQL'">
- 									<p>DRIVER CLASS = com.mysql.jdbc.Driver</p>
-									<p>URL = jdbc:mysql://
-										<span class="badge" style="background-color:yellow; color:black">{{host}}</span>:
-										<span class="badge" style="background-color:yellow; color:black">{{port}}</span>:
-										<span class="badge" style="background-color:yellow; color:black">{{databaseName}}</span>
-									</p>
-									<p>USERNAME =<span class="badge" style="background-color:yellow; color:black">{{userName}}</span></p>
-									<p>PASSWORD =<span class="badge" style="background-color:yellow; color:black">{{password}}</span></p>
-								</div>
-								<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-				        			<md-button class="md-raised md-primary" ng-click="testconnection();"> Test Connection </md-button>
-        						</section> 
-						</div>
-							<div layout="row">
+						<div layout="row">
 							<md-input-container>
 								<label>HostName</label>
-			                	<input type="text" ng-model="host" ng-value="localhost">
+			                	<input type="text" ng-model="host" ng-value="localhost" ng-change="btn0.buttonText=text[0];btn0.state=states[0]">
 			                </md-input-container>
 							<md-input-container>
 								<label>Port Number</label>							
@@ -110,7 +85,35 @@
 								<label>Database Password</label>							
 			                	<input type="text" ng-model="password" value="localhost">
 			                </md-input-container>
-			            	</div>
+			                <md-input-container>
+				        		<button type="submit" ng-click="testconnection();" ng-class="{'btn btn-info':btn0.state == 'DEFAULT','btn btn-warning disabled':btn0.state == 'PENDING','btn btn-success disabled':btn0.state == 'SUCCESS','btn btn-danger disabled':btn0.state == 'FAILED'}"> 
+							        <span ng-show="btn0.buttonText == 'Connecting'"><i class="fa fa-spinner fa-spin"></i></span>
+							        {{ btn0.buttonText }}
+							    </button>
+        					</md-input-container>
+			            </div>			        
+						<div flex="50" ng-init="host='localhost';port=8080;databaseName='testDB';userName='admin';password='admin'">
+  							<div class="well well-sm" style="background-color : black" ng-show="schemaSelect=='ORACLE'">
+ 									<p>DRIVER CLASS = oracle.jdbc.driver.OracleDriver</p>
+									<p>URL = jdbc:oracle:thin:@
+										<span class="badge" style="background-color:yellow; color:black">{{host}}</span>:
+										<span class="badge" style="background-color:yellow; color:black">{{port}}</span>:
+										<span class="badge" style="background-color:yellow; color:black">{{databaseName}}</span>
+									</p>
+									<p>USERNAME =<span class="badge" style="background-color:yellow; color:black">{{userName}}</span></p>
+									<p>PASSWORD =<span class="badge" style="background-color:yellow; color:black">{{password}}</span></p>
+								</div>
+								<div class="well well-sm" style="background-color : black" ng-show="schemaSelect=='MYSQL'">
+ 									<p>DRIVER CLASS = com.mysql.jdbc.Driver</p>
+									<p>URL = jdbc:mysql://
+										<span class="badge" style="background-color:yellow; color:black">{{host}}</span>:
+										<span class="badge" style="background-color:yellow; color:black">{{port}}</span>:
+										<span class="badge" style="background-color:yellow; color:black">{{databaseName}}</span>
+									</p>
+									<p>USERNAME =<span class="badge" style="background-color:yellow; color:black">{{userName}}</span></p>
+									<p>PASSWORD =<span class="badge" style="background-color:yellow; color:black">{{password}}</span></p>
+								</div>
+						</div>
 			        </md-content>			        
 		       </div>
 		       
@@ -119,7 +122,7 @@
         </md-content>
         <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
         	<md-button class="md-raised md-primary" ng-click="selectedIndex = selectedIndex - 1;" >Previous</md-button>
-        	<md-button class="md-raised md-primary" ng-click="selectedIndex = selectedIndex + 1;" >Next</md-button>
+        	<md-button class="md-raised md-primary" ng-click="selectedIndex = selectedIndex + 1;" ng-disabled="beforecomplete">Next</md-button>
         </section>        
       </md-tab>    
       
