@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.accolite.controller.ERDController;
 import com.accolite.datamodel.ColumnDetail;
+import com.accolite.datamodel.Configuration;
 import com.accolite.datamodel.Model;
 import com.accolite.datamodel.TableDetail;
 import com.google.gson.Gson;
@@ -21,16 +22,15 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 
 public class OrientLoader {
 
-	private static String DATABASE =ERDController.DBPATH+"testDB";
 	final static Logger logger = Logger.getLogger(OrientLoader.class);
 	
-	public static void initiateLoad(Model model) {
+	public static void initiateLoad(Model model,Configuration configuration) {
 		
 		if(null != model)
 		{
 			try 
 			{
-				OrientGraphFactory factory = factory(DATABASE,null,null);
+				OrientGraphFactory factory = factory((ERDController.DBPATH+""+configuration.getDatabaseName()),configuration.getDbUserName(),configuration.getDbPassword());
 				
 				System.out.println("Data load initiated !!");
 				

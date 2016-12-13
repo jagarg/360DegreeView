@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import com.accolite.datamodel.JDBCConnection;
 import com.accolite.orient.OrientMain;
 
 public class RDMSUtility {
@@ -43,4 +44,19 @@ public class RDMSUtility {
 		}
 		return con;
 	}
+	
+	public static Connection getConnection(JDBCConnection jdbcConnection) {
+		
+		Connection conn = null;
+		logger.info("Fetching JDBC Connection Details .... ");
+		
+		try
+		{
+			Class.forName(jdbcConnection.getDriver());
+			conn =  DriverManager.getConnection(jdbcConnection.getUrl(),jdbcConnection.getUsername(),jdbcConnection.getPassword());
+		} catch (ClassNotFoundException | SQLException e) {
+			logger.error(" Exception : "+e.getStackTrace());
+		}
+		return conn;
+	}	
 }

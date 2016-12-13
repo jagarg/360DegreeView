@@ -35,6 +35,8 @@ import com.accolite.datamodel.Table;
 import com.accolite.datamodel.TableMapping;
 import com.accolite.orient.OrientLoader;
 import com.accolite.parsers.JdoXmlParser;
+import com.accolite.rdms.MySQLUtility;
+import com.accolite.rdms.OracleUtility;
 import com.accolite.rdms.RDMSUtility;
 import com.accolite.service.ConfigurationService;
 import com.accolite.service.UserService;
@@ -80,25 +82,24 @@ public class ERDController {
 		
 		// Process this directory for zip and jar files
 		File fileDirectory = new File(configuration.getConfigName()+"//");
-	    System.out.println(fileDirectory.getAbsolutePath());
 	    
 	    // Create new entry for Configuration
 	    // generate Database for user
-	    String dbName = configuration.getConfigName()+"_"+System.currentTimeMillis() % 1000;
+	    String dbName = configuration.getConfigName()+"_"+System.currentTimeMillis();
 	    configuration.setDatabaseName(dbName);
 	    configuration.setDbUserName("admin");
 	    configuration.setDbPassword("admin");
+	    
 	    boolean result =  ConfigurationService.addConfiguration(configuration);
 
-	    String database = configuration.getDatabaseName();
-	    String dbUsername = configuration.getDbUserName();
-	    String dbPassword = configuration.getDbPassword();
 	    Model model = new Model();
 	    
 	    // Process the data and create a DataBase with details provided in configuration
 	    switch(configuration.getSchemaName())
 	    {
 	    	case "JDO":
+	    		logger.info("Processing JDO files ...");
+	    		
 	    		//create unjar/unip folder
 	    		File unJarDirectory = new File(fileDirectory.getAbsolutePath()+"//unjar");
 	    		unJarDirectory.mkdir();
@@ -112,9 +113,10 @@ public class ERDController {
 	    		
 	    		//parse the config files
 	    		model = JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarDirectory.getAbsolutePath(), new ArrayList<String>(),"jdo"),classDirectory.getAbsolutePath());
-	    		// To Do - Jay
-	    		// Process fileDirectory for zip and jar
-	    		logger.info("Processing JDO files ...");
+	    		
+	    		//OrientLoader.initiateLoad(model,configuration);
+	    		
+	    		logger.info("Processing JDO files Completes !!");
 	    	break;
 	    	
 	    	case "HIBERNATE":
@@ -124,13 +126,33 @@ public class ERDController {
 	    	break;
 	    	
 	    	case "ORACLE":
-				// To Do - Himanshu
+	    		/**
+	    		 *  Steps
+	    		 *  1. Provide Database Details and Connection details using <a>Configuration</a>
+	    		 *  2. Call process() from <a>OracleUtility</a> and it will return instance of <a>Model</a>
+	    		 *  3. Call initiateLoad(Model model) from <a>OrientLoader</a> to start loading.
+	    		 */
 	    		logger.info("Processing ORACLE ...");
+	    		
+	    		model = OracleUtility.process(configuration.getConnection());
+	    		OrientLoader.initiateLoad(model,configuration);
+	    		
+	    		logger.info("Processing ORACLE Completes !!");
 	    	break;	 
 	    	
 	    	case "MYSQL":
-				// To Do - Himanshu
+	    		/**
+	    		 *  Steps
+	    		 *  1. Provide Database Details and Connection details using <a>Configuration</a>
+	    		 *  2. Call process() from <a>MySQLUtility</a> and it will return instance of <a>Model</a>
+	    		 *  3. Call initiateLoad(Model model) from <a>OrientLoader</a> to start loading.
+	    		 */
 	    		logger.info("Processing MYSQL ...");
+	    		
+	    		//model = MySQLUtility.process(configuration.getConnection());
+	    		//OrientLoader.initiateLoad(model,configuration);
+	    		
+	    		logger.info("Processing MYSQL Completes !!");
 	    	break;	  
 
 	    	case "CUSTOM JAR":
@@ -139,20 +161,22 @@ public class ERDController {
 	    		logger.info("Processing CUSTOM JAR ...");
 	    	break;
 	    }	    
-	    
-	    //OrientLoader.initiateLoad(model);  Jay please call OrientLoader from Switch Case itself
-	    
-	    // Delete fileDirectory
+	    	    
+	    // Delete fileDirectory in case of JDO or HIBERNATE
 	    try
 	    {
-	    if(removeDirectory(fileDirectory))
-	    	System.out.println("Directory "+fileDirectory+" deleted !!");
-	    else
-	    	System.out.println("Directory "+fileDirectory+" not deleted !!");
-	    }catch(Exception e)
-	    {
-	    	System.out.println(e);
+	    	if(configuration.getSchemaName().equals("JDO") || configuration.getSchemaName().equals("HIBERNATE"))
+	    	{
+			    if(removeDirectory(fileDirectory))
+			    	System.out.println("Directory "+fileDirectory+" deleted !!");
+			    else
+			    	System.out.println("Directory "+fileDirectory+" not deleted !!");
+			}
 	    }
+	    catch(Exception e)
+		{
+			logger.error(e);
+		}
 	    
 		return result;   
     }

@@ -11,9 +11,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.accolite.datamodel.ColumnDetail;
+import com.accolite.datamodel.JDBCConnection;
 import com.accolite.datamodel.Model;
 import com.accolite.datamodel.TableDetail;
-import com.accolite.orient.OrientLoader;
 
 public class OracleUtility {
 
@@ -44,13 +44,13 @@ public class OracleUtility {
 			+ "WHERE A.TABLE_NAME IN (TABLE_LIST) AND A.constraint_type = 'P' AND A.constraint_name LIKE 'SYS%'"
 			+ ") ORDER BY TABLE_NAME";
 	
-	public static void main(String[] args) {
+	/**public static void main(String[] args) {
 		initiateProcess();
-	}
+	}**/
 	
 	public static void initiateProcess() {
 		logger.info(" Request : Oracle to Orient begin.. ");
-		OrientLoader.initiateLoad(process());
+		//OrientLoader.initiateLoad(process());
 		logger.info(" Request : Oracle to Orient end.. ");
 	}
 	
@@ -68,22 +68,22 @@ public class OracleUtility {
 		TABLE_LIST = tableList.toString();
 	}
 	
-	private static Model process() {
+	public static Model process(JDBCConnection jdbcConnection) {
 	
 		logger.info("Fecthing tables ...");
-		List<String> tables = executeQuery(table);
+		List<String> tables = executeQuery(table,jdbcConnection);
 		getTableList(tables);
 		
 		logger.info("Fecthing Table and Column names ...");
-		List<String> tableColumns = executeQuery(tableColumn);
+		List<String> tableColumns = executeQuery(tableColumn,jdbcConnection);
 		
 		logger.info("Fecthing Primary Keys ...");
 		primaryKey = primaryKey.replace("TABLE_LIST", TABLE_LIST);
-		List<String> primaryKeys = executeQuery(primaryKey);
+		List<String> primaryKeys = executeQuery(primaryKey,jdbcConnection);
 		
 		logger.info("Fecthing Foreign Keys ...");
 		foreignKeys = foreignKeys.replace("TABLE_LIST", TABLE_LIST);
-		List<String> foriegnKeys = executeQuery(foreignKeys);		
+		List<String> foriegnKeys = executeQuery(foreignKeys,jdbcConnection);		
 		
 		logger.info("Process data into Model Class.");
 		String prevTable = null;
@@ -148,11 +148,11 @@ public class OracleUtility {
 		return model;
 	}
 	
-	private static List<String> executeQuery(String query) {
+	private static List<String> executeQuery(String query,JDBCConnection jdbcConnection) {
 		List<String> list = new ArrayList<>();
 		logger.debug("QUERY : "+query);
 		
-		try(Connection connection = RDMSUtility.getConnection();
+		try(Connection connection = RDMSUtility.getConnection(jdbcConnection);
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery(query)) {	
 			

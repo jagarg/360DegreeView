@@ -7,6 +7,7 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 
+import com.accolite.datamodel.Configuration;
 import com.accolite.datamodel.Model;
 
 public class OrientMain {
@@ -35,7 +36,12 @@ public class OrientMain {
     		return model;
     	}
 	}
-	public static void main(String[] args) {
-		OrientLoader.initiateLoad(deSearilizeModel());
-	}
+	/**public static void main(String[] args) {
+		Configuration configuration = new Configuration();
+		configuration.setDatabaseName("testDB");
+		configuration.setDbPassword("admin");
+		configuration.setDbPassword("admin");
+		
+		OrientLoader.initiateLoad(deSearilizeModel(),configuration);
+	}**/
 }

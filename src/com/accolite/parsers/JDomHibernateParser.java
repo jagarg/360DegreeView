@@ -13,6 +13,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import com.accolite.datamodel.ColumnDetail;
+import com.accolite.datamodel.Configuration;
 import com.accolite.datamodel.Model;
 import com.accolite.datamodel.TableDetail;
 import com.accolite.orient.OrientLoader;
@@ -24,7 +25,14 @@ public class JDomHibernateParser {
 		//File inputFile = new File("C:\\AnkitM\\DR\\sample_hibernate_xml\\hibernateSample4.xml");
 		Model model = new Model();
 		parseXml(listOfFiles(dirName, new ArrayList<String>()), model);
-		OrientLoader.initiateLoad(model);
+		
+		// This is a temporary fix
+		Configuration configuration = new Configuration();
+		configuration.setDatabaseName("testDB");
+		configuration.setDbPassword("admin");
+		configuration.setDbPassword("admin");
+		
+		OrientLoader.initiateLoad(model,configuration);
 	}
 	
 	public static void parseXml(ArrayList<String> files, Model model ) {
