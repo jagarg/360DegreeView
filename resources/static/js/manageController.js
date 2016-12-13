@@ -44,10 +44,10 @@ app.service('fileUpload', ['$http', function ($http) {
 
 app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sce,$rootScope) {
 
+	var details = "";
 	$scope.welcomeNext=true;
 	$scope.databaseNext=true;
-	$scope.disabledatabase=true;
-	//$scope.disableschema=true;
+	$scope.disableschema=true;
 	$scope.disableschemadetails=true;
 	$scope.disablecomplete=true;
 	$scope.schemaOptions = ['JDO','HIBERNATE','ORACLE','MYSQL','CUSTOM JAR'];
@@ -82,27 +82,68 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 		$scope.schemaSelect="";
 	}
 	
+	$scope.testconnection=function() {
+		
+		if($scope.schemaSelect == 'ORACLE')
+		{
+			details = {
+					driver:"oracle.jdbc.driver.OracleDriver",
+					url:"jdbc:oracle:thin:@"+$scope.host+":"+$scope.port+":"+$scope.databaseName,
+					username:$scope.userName,
+					password:$scope.password
+			}
+		}
+		else if($scope.schemaSelect == 'MYSQL')
+		{			
+			details = {
+					driver:"com.mysql.jdbc.Driver",
+					url:"jdbc:mysql://"+$scope.host+":"+$scope.port+":"+$scope.databaseName,
+					username:$scope.userName,
+					password:$scope.password
+			}
+		}		
+		
+		console.log(details);
+	        
+	        var config = {
+	            headers : {
+	                'Content-Type': 'application/json'
+	            }
+	        }
+
+	        $http.post('/testJDBC/', details, config)
+	        .success(function (response) {
+	        	console.log(response);
+	        	displaySuccess("JDBC success !!!");
+	        })
+	        .error(function (response) {
+	            console.log(response);
+	            displayError("JDBC failed !!!");
+
+	        }).finally(function() {
+	        // called no matter success or failure
+	            return response;
+	      });
+	}
+	
 	$scope.beginDataLoad=function() {
 	
 		$rootScope.disableDIV = true;
 		$rootScope.toggle = 'disabled';
 		console.log("Data Processing initiated !!!");		
-		
-		if($scope.dbuser == null || $scope.dbuser == '')
-			$scope.dbuser = 'Admin';
-		
-		if($scope.dbpasswd == null || $scope.dbpasswd == '')
-			$scope.dbpasswd = 'Admin';
-		
+			
 		var data = {
 			configName: $scope.newConfigName,
-			databaseName: $scope.dbName,
-			dbUserName:$scope.dbuser,
-			dbPassword:$scope.dbpasswd,
+			databaseName: null,
+			dbUserName:null,
+			dbPassword:null,
 			schemaName:$scope.schemaSelect,
-			schemaDetail:$scope.newConfigName
+			connection:details
         };
         
+		if(details === "")
+			data.connection = null;
+		
         var config = {
             headers : {
                 'Content-Type': 'application/json'
@@ -153,26 +194,20 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 		{
 			if(1 == old || current == 0)
 			{
-				$scope.disabledatabase=true;
 				$scope.disableschema=true;
 				$scope.disablecomplete=true;
 				clearAll();
 			}
 			else if(2 == old || current == 1)
 			{
-				$scope.disableschema=true;
 				$scope.disablecomplete=true;
-			}
-			else if(3 == old || current == 2)
-				$scope.disablecomplete=true;
+			}				
 		}
 		else
 		{
 			if(0 == old && 1 == current)
-				$scope.disabledatabase=false;
-			else if(1 == old && 2 == current)
 				$scope.disableschema=false;
-			else if(2 == old && 3 == current)
+			else if(1 == old && 2 == current)
 			{
 				$scope.disablecomplete=false;
 				
@@ -180,7 +215,6 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 				var summary = "<table class='table borderless'><thead>"
 				
 				summary	= summary + "<tr><th>Configuration Name</th><th>"+$scope.newConfigName+"</th></tr>";
-				summary	= summary + "<tr><th>Databse Name</th><th>"+$scope.dbName+"</th></tr>";
 				summary	= summary + "<tr><th>Schema Type</th><th>"+$scope.schemaSelect+"</th></tr>";
 				
 				if($scope.schemaSelect == 'JDO' || $scope.schemaSelect == 'HIBERNATE')
@@ -189,18 +223,18 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 				}
 				else if($scope.schemaSelect == 'ORACLE')
 				{
-					var details = "DRIVER CLASS = oracle.jdbc.driver.OracleDriver<br/>";
-					details += "URL = jdbc:oracle:thin:@"+$scope.host+":"+$scope.port+":"+$scope.databaseName+"<br/>";
-					details += "USERNAME = "+$scope.userName+"<br/>";
-					details += "PASSWORD = "+$scope.password+"<br/>";
+					/**var DBdetails = "DRIVER CLASS = oracle.jdbc.driver.OracleDriver<br/>";
+					DBdetails += "URL = jdbc:oracle:thin:@"+$scope.host+":"+$scope.port+":"+$scope.databaseName+"<br/>";
+					DBdetails += "USERNAME = "+$scope.userName+"<br/>";
+					DBdetails += "PASSWORD = "+$scope.password+"<br/>";**/
 					summary	= summary + "<tr><th>RDBMS Details</th><th>"+details+"</th></tr>";
 				}
 				else if($scope.schemaSelect == 'MYSQL')
 				{
-					var details = "DRIVER CLASS = com.mysql.jdbc.Driver<br/>";
+					/**var details = "DRIVER CLASS = com.mysql.jdbc.Driver<br/>";
 					details += "URL = jdbc:mysql://"+$scope.host+":"+$scope.port+":"+$scope.databaseName+"<br/>";
 					details += "USERNAME = "+$scope.userName+"<br/>";
-					details += "PASSWORD = "+$scope.password+"<br/>";
+					details += "PASSWORD = "+$scope.password+"<br/>";**/
 					summary	= summary + "<tr><th>RDBMS Details</th><th>"+details+"</th></tr>";
 				}
 				summary = summary + "</thead></table>"

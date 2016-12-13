@@ -14,7 +14,7 @@ import com.accolite.orient.OrientMain;
 
 public class RDMSUtility {
 
-	static String FIELD_SEPERATOR = ":";
+	public static String FIELD_SEPERATOR = ":";
 	final static Logger logger = Logger.getLogger(RDMSUtility.class);
 	
 	public static Connection getConnection() {
@@ -31,12 +31,12 @@ public class RDMSUtility {
 			props.load(fis);
 
 			// load the Driver Class
-			Class.forName(props.getProperty("DB_DRIVER_CLASS"));
+			Class.forName(props.getProperty("DRIVER_CLASS"));
 
 			// create the connection now
-			con = DriverManager.getConnection(props.getProperty("DB_URL"),
-					props.getProperty("DB_USERNAME"),
-					props.getProperty("DB_PASSWORD"));
+			con = DriverManager.getConnection(props.getProperty("URL"),
+					props.getProperty("USERNAME"),
+					props.getProperty("PASSWORD"));
 			logger.info("JDBC Connection established successfully..");
 		} catch (IOException | ClassNotFoundException | SQLException e) {
 			logger.error(" Exception : "+e.getStackTrace());

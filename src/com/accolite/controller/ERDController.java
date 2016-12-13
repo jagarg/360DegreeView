@@ -3,6 +3,9 @@ package com.accolite.controller;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +28,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.accolite.Utility.Utility;
 import com.accolite.datamodel.Configuration;
-import com.accolite.datamodel.DatabaseDetail;
+import com.accolite.datamodel.DataModelDetail;
+import com.accolite.datamodel.JDBCConnection;
 import com.accolite.datamodel.Model;
 import com.accolite.datamodel.Table;
 import com.accolite.datamodel.TableMapping;
 import com.accolite.orient.OrientLoader;
 import com.accolite.parsers.JdoXmlParser;
+import com.accolite.rdms.RDMSUtility;
 import com.accolite.service.ConfigurationService;
 import com.accolite.service.UserService;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
@@ -53,6 +58,23 @@ public class ERDController {
 		return "index";
 	}
 
+	@RequestMapping(value="/testJDBC/", method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Boolean testJDBC(@RequestBody JDBCConnection jdbcConnection)
+	{  
+		boolean result = false;
+		// load the Driver Class
+		try
+		{
+			Class.forName(jdbcConnection.getDriver());
+			Connection conn =  DriverManager.getConnection(jdbcConnection.getUrl(),jdbcConnection.getUsername(),jdbcConnection.getPassword());
+			result = true;
+		} catch (ClassNotFoundException | SQLException e) {
+			logger.error(" Exception : "+e.getStackTrace());
+			result = false;
+		}
+		return result;
+	}
+	
 	@RequestMapping(value="/startProcess/", method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Boolean handleFileUpload(@RequestBody Configuration configuration){    
 		
@@ -61,7 +83,11 @@ public class ERDController {
 	    System.out.println(fileDirectory.getAbsolutePath());
 	    
 	    // Create new entry for Configuration
-
+	    // generate Database for user
+	    String dbName = configuration.getConfigName()+"_"+System.currentTimeMillis() % 1000;
+	    configuration.setDatabaseName(dbName);
+	    configuration.setDbUserName("admin");
+	    configuration.setDbPassword("admin");
 	    boolean result =  ConfigurationService.addConfiguration(configuration);
 
 	    String database = configuration.getDatabaseName();
@@ -89,6 +115,7 @@ public class ERDController {
 	    		// To Do - Jay
 	    		// Process fileDirectory for zip and jar
 	    		logger.info("Processing JDO files ...");
+	    	break;
 	    	
 	    	case "HIBERNATE":
 				// To Do - Ankit
@@ -113,7 +140,7 @@ public class ERDController {
 	    	break;
 	    }	    
 	    
-	    OrientLoader.initiateLoad(model);
+	    //OrientLoader.initiateLoad(model);  Jay please call OrientLoader from Switch Case itself
 	    
 	    // Delete fileDirectory
 	    try
@@ -178,13 +205,7 @@ public class ERDController {
 	        return "You failed to upload files because one of the file was empty.";
 	    } 
     }
-	
-	@RequestMapping(value = "/config/add", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	 public @ResponseBody boolean addConfiguration(@RequestBody Configuration configuration) 
-	 {
-		return ConfigurationService.addConfiguration(configuration);
-	 }
-	
+		
 	@RequestMapping(value = "/config/list", method = RequestMethod.GET)
 	 public @ResponseBody List<Map<String,Object>> listConfiguration() 
 	 {
@@ -199,19 +220,21 @@ public class ERDController {
 		return map;
 	 }
 		
-	@RequestMapping(value = "/user/listdb", method = RequestMethod.GET)
-	 public @ResponseBody List<DatabaseDetail> listDB() 
+	@RequestMapping(value = "/user/listConfig", method = RequestMethod.GET)
+	 public @ResponseBody List<DataModelDetail> listDB() 
 	 {
 		List<String> list = ConfigurationService.listDB();
 		
-		List<DatabaseDetail> details = new ArrayList<>();
+		List<DataModelDetail> details = new ArrayList<>();
 		
-		for (String database : list) {
+		for (String entry : list) {
 			
-			DatabaseDetail dd = new DatabaseDetail();
-			dd.setDatabaseName(database);
+			String[] arr = entry.split(RDMSUtility.FIELD_SEPERATOR);
 			
-			dd.setTables(UserService.listTable(database));
+			DataModelDetail dd = new DataModelDetail();
+			dd.setDataModelName(arr[0]);
+			
+			dd.setTables(UserService.listTable(arr[1]));
 			details.add(dd);
 		}
 		return details;

@@ -64,17 +64,17 @@
 		  ]
 		}
 		
-	b.	List all Database
+	b.	List all Data Model and Tables
 		-----------------------------------------
 		
 		Type : GET
 		
-		Request : http://localhost:8080/user/listdb
+		Request : http://localhost:8080/user/listConfig
 		
 		Response : 
 		[
 		  {
-			"databaseName": "DB_1",
+			"dataModelName": "CN_1",
 			"tables": 
 				[
 				  "TABLE_1",
@@ -86,14 +86,14 @@
 				]
 		  },
 		  {
-			"databaseName": "DB_2",
+			"dataModelName": "CN_2",
 			"tables": null
 		  },
 		  {
 			...
 		  }
 		  {
-			"databaseName": "DB_N",
+			"dataModelName": "CN_N",
 			"tables": null
 		  }
 		]	

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.accolite.controller.ERDController;
 import com.accolite.datamodel.Configuration;
 import com.accolite.orient.OrientLoader;
+import com.accolite.rdms.RDMSUtility;
 import com.google.gson.Gson;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Vertex;
@@ -54,7 +55,7 @@ public class ConfigurationDAO {
 		OrientGraphFactory factory = OrientLoader.factory(ERDController.ADMIN_DATABSE,null,null);
 		OrientGraph graph = factory.getTx();
 
-		String query = "SELECT FROM CONFIGURATION";
+		String query = "SELECT configName,schemaName FROM CONFIGURATION";
 
 		ArrayList<Vertex> list = null;
 
@@ -88,7 +89,7 @@ public class ConfigurationDAO {
 		OrientGraphFactory factory = OrientLoader.factory(ERDController.ADMIN_DATABSE,null,null);
 		OrientGraph graph = factory.getTx();
 
-		String query = "SELECT databaseName FROM CONFIGURATION";
+		String query = "SELECT configName,databaseName FROM CONFIGURATION";
 
 		ArrayList<String> list = null;
 
@@ -102,7 +103,7 @@ public class ConfigurationDAO {
 			list = new ArrayList<>();
 			
 			for (Vertex vertex : database) {
-				list.add(vertex.getProperty("databaseName"));
+				list.add(vertex.getProperty("configName")+RDMSUtility.FIELD_SEPERATOR+vertex.getProperty("databaseName"));
 			}
 	        
 			graph.commit();

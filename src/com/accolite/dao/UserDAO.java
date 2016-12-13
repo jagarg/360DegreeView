@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import scala.remote;
-
 import com.accolite.controller.ERDController;
 import com.accolite.orient.AllPaths;
 import com.accolite.orient.OrientLoader;

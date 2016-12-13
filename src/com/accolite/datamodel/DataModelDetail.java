@@ -2,18 +2,18 @@ package com.accolite.datamodel;
 
 import java.util.List;
 
-public class DatabaseDetail {
+public class DataModelDetail {
 
-	private String databaseName;
+	private String dataModelName;
 	
 	private List<String> tables;
 
-	public String getDatabaseName() {
-		return databaseName;
+	public String getDataModelName() {
+		return dataModelName;
 	}
 
-	public void setDatabaseName(String databaseName) {
-		this.databaseName = databaseName;
+	public void setDataModelName(String dataModelName) {
+		this.dataModelName = dataModelName;
 	}
 
 	public List<String> getTables() {

@@ -7,7 +7,7 @@ public class Configuration {
 	private String dbUserName;
 	private String dbPassword;
 	private String schemaName;
-	private String schemaDetail;
+	private JDBCConnection connection;
 	
 	public String getConfigName() {
 		return configName;
@@ -39,10 +39,10 @@ public class Configuration {
 	public void setSchemaName(String schemaName) {
 		this.schemaName = schemaName;
 	}
-	public String getSchemaDetail() {
-		return schemaDetail;
+	public JDBCConnection getConnection() {
+		return connection;
 	}
-	public void setSchemaDetail(String schemaDetail) {
-		this.schemaDetail = schemaDetail;
+	public void setConnection(JDBCConnection connection) {
+		this.connection = connection;
 	}
 }
