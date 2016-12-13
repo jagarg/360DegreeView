@@ -54,6 +54,7 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 	$scope.schemaOptions = ['JDO','HIBERNATE','ORACLE','MYSQL','CUSTOM JAR'];
 	$scope.states = ['DEFAULT', 'PENDING', 'SUCCESS', 'FAILED'];
 	$scope.text = ['Test Connection', 'Connecting', 'Connection Sucessfull', 'Connection Failed'];
+	$scope.uploadText = ['Upload File', 'Uploading', 'Upload Sucessfull', 'Upload Failed'];
 	$scope.btn0 = {
 	        state: $scope.states[0],
 	        buttonText: $scope.text[0]
@@ -81,11 +82,7 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 		$scope.disablecomplete=true;
 		$scope.summary=$sce.trustAsHtml("");
 		$scope.newConfigName = "";
-		$scope.dbName = "";
-		$scope.dbuser ="";
-		$scope.dbpasswd="";
-		$scope.jdoFile="";
-		$scope.jarFile="";
+		$scope.fileOne="";
 		$scope.schemaSelect="";
 	}
 	
@@ -213,7 +210,19 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
 	};
 	$scope.$watch('schemaSelect', function() {
 
-		console.log("here"+$scope.schemaSelect+""+$scope.opt);
+		console.log("here -> "+$scope.schemaSelect);
+		
+		if($scope.schemaSelect === 'JDO' || $scope.schemaSelect === 'HIBERNATE')
+		{
+			$scope.btn0.state=$scope.states[0];
+			$scope.btn0.buttonText=$scope.uploadText[0];
+		}
+		else if($scope.schemaSelect === 'ORACLE' || $scope.schemaSelect === 'MYSQL')
+		{
+			$scope.btn0.state=$scope.states[0];
+			$scope.btn0.buttonText=$scope.text[0];
+		}
+		
 	});
 	
 	$scope.$watch('selectedIndex', function(current, old){
@@ -370,9 +379,12 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
     } 
     
     $scope.uploadFile = function(){
-    	$rootScope.disableDIV = true;
+    	
         var fileone = $scope.fileOne;
         
+		$scope.btn0.state=$scope.states[1];
+		$scope.btn0.buttonText=$scope.uploadText[1];
+		
         var fd = new FormData();
         fd.append('configName',$scope.newConfigName);
         fd.append('fileOne', fileone);
@@ -389,13 +401,15 @@ app.controller('ManageController', function($scope,$http,$timeout,fileUpload,$sc
         	console.log(response);
         	$rootScope.disableDIV = false;
         	$scope.beforecomplete=false;
-        	displaySuccess("File uploaded !!");
+    		$scope.btn0.state=$scope.states[2];
+    		$scope.btn0.buttonText=$scope.uploadText[2];
         })
         .error(function(response){
         	console.log(response);
         	$rootScope.disableDIV = false;
         	$scope.beforecomplete=true;
-        	displayError("File not uploaded !!");
+    		$scope.btn0.state=$scope.states[3];
+    		$scope.btn0.buttonText=$scope.uploadText[3];
         	
         }).finally(function() {
         // called no matter success or failure
