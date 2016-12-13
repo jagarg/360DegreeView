@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,8 @@ public class ERDController {
 	public static String DBPATH = "plocal:D:\\orientdb-community-2.2.13\\databases\\";
 	//"plocal:C:\\Users\\hsareen\\Desktop\\db\\orientdb-community-2.2.13\\databases\\";
 	public static String ADMIN_DATABSE = DBPATH+"appDB";
+	
+	static HashMap<String, String> config_DB = null;
 	
 	@RequestMapping("/")
 	public String welcome() {
@@ -248,13 +251,15 @@ public class ERDController {
 	 public @ResponseBody List<DataModelDetail> listDB() 
 	 {
 		List<String> list = ConfigurationService.listDB();
-		
 		List<DataModelDetail> details = new ArrayList<>();
+		
+		config_DB = new HashMap<>();
 		
 		for (String entry : list) {
 			
 			String[] arr = entry.split(RDMSUtility.FIELD_SEPERATOR);
 			
+			config_DB.put(arr[0], arr[1]);
 			DataModelDetail dd = new DataModelDetail();
 			dd.setDataModelName(arr[0]);
 			
@@ -264,16 +269,22 @@ public class ERDController {
 		return details;
 	 }
 	
-	@RequestMapping(value = "/user/gettable/{database}/{table}", method = RequestMethod.GET)
-	 public @ResponseBody Table getTable(@PathVariable String database,@PathVariable String table) 
+	@RequestMapping(value = "/user/gettable/{configName}/{table}", method = RequestMethod.GET)
+	 public @ResponseBody Table getTable(@PathVariable String configName,@PathVariable String table) 
 	 {
-		return UserService.getTable(database,table);
+		if(config_DB.containsKey(configName))
+			return UserService.getTable(config_DB.get(configName),table);
+		else
+			return new Table();
 	 }	
 	
-	@RequestMapping(value = "/user/getmappings/{database}/{tables}", method = RequestMethod.GET)
-	 public @ResponseBody TableMapping getTableMapping(@PathVariable String database,@PathVariable String tables) 
+	@RequestMapping(value = "/user/getmappings/{configName}/{tables}", method = RequestMethod.GET)
+	 public @ResponseBody TableMapping getTableMapping(@PathVariable String configName,@PathVariable String tables) 
 	 {
-		return UserService.getTableMapping(database,tables);
+		if(config_DB.containsKey(configName))
+			return UserService.getTableMapping(config_DB.get(configName),tables);
+		else
+			return new TableMapping();
 	 }
 	
 	@RequestMapping(value = "/user/getallpaths/{database}/{tables}", method = RequestMethod.GET)

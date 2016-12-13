@@ -1,7 +1,120 @@
+﻿<!DOCTYPE html>
 <html>
-<head>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>DB Visualizer</title>
+
+    <!-- Style sheets -->
+    <link href="styles/bootstrap.css" rel="stylesheet" />
+    <link href="styles/bootstrap-duallistbox.css" rel="stylesheet">
 </head>
-<body>
-	End User !!!!!
+
+<!-- Add your site or application content here -->
+<body ng-app="dbVisualizer" ng-class="bodyClass">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <div class="navbar-brand">DB Visualizer</div>
+            </div>
+        </div>
+    </nav>
+
+  <div class="container" ng-controller="DbTableListCtrl as vm">
+    <div ng-include src="'app/visualizer/dbTableListView.html'"></div>
+  </div>
+  
+  <div class="container-fluid container-studio" ng-controller="GraphController">
+    <div ng-class="containerClass">
+      <div class="container-fluid slideLeft" ng-view>
+      </div>
+    </div>
+  </div>
+   <!-- Library Scripts -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script> 
+<script src="scripts/angular.js"></script>
+<script src="components/angular-cookies/angular-cookies.min.js"></script>
+<script src="components/angular-sanitize/angular-sanitize.min.js"></script>
+<script src="components/angular-resource/angular-resource.min.js"></script>
+<script src="components/angular-animate/angular-animate.min.js"></script>
+<script src="components/angular-route/angular-route.min.js"></script>
+<script src="components/spin.js/spin.js"></script>
+<script src="components/js-base64/base64.js"></script>
+<script src="components/moment/moment.js"></script>
+<script src="components/moment-jdateformatparser/moment-jdateformatparser.js"></script>
+<script src="components/angular-strap/dist/angular-strap.min.js"></script>
+<script src="components/angular-strap/dist/angular-strap.tpl.js"></script>
+
+<!--<script src="components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>-->
+<script src="components/spectrum/spectrum.js"></script>
+<script src="components/angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker.min.js"></script>
+
+<script src="components/d3/d3.js"></script>
+<script src="components/stringjs/lib/string.min.js"></script>
+<script type="text/javascript" src="components/angular-local-storage/dist/angular-local-storage.min.js"></script>
+<script type="text/javascript" src="components/codemirror/lib/codemirror.js"></script>
+<script type="text/javascript" src="components/codemirror/mode/javascript/javascript.js"></script>
+<script type="text/javascript" src="components/codemirror/mode/sql/sql.js"></script>
+<script type="text/javascript" src="components/codemirror/addon/hint/show-hint.js"></script>
+<script type="text/javascript" src="components/codemirror/addon/search/search.js"></script>
+<script type="text/javascript" src="components/codemirror/addon/search/searchcursor.js"></script>
+<script type="text/javascript" src="components/codemirror/addon/dialog/dialog.js"></script>
+<script type="text/javascript" src="components/codemirror/mode/xml/xml.js"></script>
+<script type="text/javascript" src="components/codemirror/addon/comment/comment.js"></script>
+<script type="text/javascript" src="components/nprogress/nprogress.js"></script>
+<script type="text/javascript" src="components/ng-tags-input/ng-tags-input.min.js"></script>
+<script type="text/javascript" src="components/angular-translate/angular-translate.min.js"></script>
+<script type="text/javascript"
+        src="components/angular-translate-loader-partial/angular-translate-loader-partial.min.js"></script>
+<script src="components/angular-scroll/angular-scroll.min.js"></script>
+<script src="components/ng-table/dist/ng-table.min.js"></script>
+<script src="components/angular-bootstrap-switch/dist/angular-bootstrap-switch.min.js"></script>
+<script src="components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+<script src="components/angular-smart-table/dist/smart-table.js"></script>
+<script src="components/datatables/media/js/jquery.dataTables.min.js"></script>
+<script src="components/angular-datatables/dist/angular-datatables.min.js"></script>
+<script src="components/c3js-chart/c3.js"></script>
+<script src="components/angular-ui-select/dist/select.js"></script>
+<script src="components/microplugin/src/microplugin.js"></script>
+<script src="components/selectize/dist/js/selectize.js"></script>
+<script src="components/filesize/lib/filesize.min.js"></script>
+<script src="components/noty/js/noty/packaged/jquery.noty.packaged.min.js"></script>
+
+<script src="components/fullcalendar/dist/fullcalendar.js"></script>
+<script src="components/TimelineJS3/compiled/js/timeline.js"></script>
+<script src="components/lodash/dist/lodash.min.js"></script>
+<script src="components/filesaver/FileSaver.min.js"></script>
+
+<!-- Modules -->
+<script src="app/database/graph.js"></script>
+<script src="app/database/orientdb-graphviz.js"></script>
+
+
+<!--<script type="text/javascript"-->
+<!--src="components/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>-->
+<script type="text/javascript"
+        src="components/fontIconPicker/jquery.fonticonpicker.min.js"></script>
+
+    <!-- Application Script -->
+    <script src="app/app.js"></script>
+    <script src="scripts/angular-resource.js"></script>
+    <script src="scripts/angular-route.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/module.js"></script>
+    <script src="scripts/jquery.bootstrap-duallistbox.js"></script> 
+    <script src="scripts/bsDuallistbox.js"></script>
+
+    <!-- Domain Classes -->
+    <script src="app/visualizer/database.js"></script>
+
+    <!-- Services -->
+    <script src="app/common/services/common.services.js"></script>
+    <script src="app/common/services/dataAccessService.js"></script>
+    <script src="app/common/services/graph-services.js"></script>
+
+    <!-- Controllers -->
+    <script src="app/visualizer/dbTableListCtrl.js"></script>
+    <script src="app/database/graph-controller.js"></script>
+
 </body>
+
 </html>

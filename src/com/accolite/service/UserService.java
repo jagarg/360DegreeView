@@ -63,8 +63,7 @@ public class UserService {
 		String[] tableList = tables.split(",");
 
 		if (tableList.length == 1) {
-			ArrayList<String> data = UserDAO
-					.getMappings(database, tableList[0]);
+			ArrayList<String> data = UserDAO.getMappings(database, tableList[0]);
 
 			// fetch path info
 			for (String path : data)
