@@ -15,7 +15,7 @@ public class Table {
 	}
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
-		this.rid = "#"+tableName;
+		this.rid = tableName;
 	}	
 
 	public List<Column> getColumns() {

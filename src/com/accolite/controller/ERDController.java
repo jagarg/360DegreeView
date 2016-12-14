@@ -17,6 +17,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,12 +48,13 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 
+@CrossOrigin(origins = "*")
 @Controller
 @EnableAutoConfiguration
 public class ERDController {
 	
 	final static Logger logger = Logger.getLogger(ERDController.class);
-	public static String DBPATH = "plocal:D:\\orientdb-community-2.2.13\\databases\\";
+	public static String DBPATH = "plocal:F:\\orientdb-community-2.2.12\\databases\\";
 	//"plocal:C:\\Users\\hsareen\\Desktop\\db\\orientdb-community-2.2.13\\databases\\";
 	public static String ADMIN_DATABSE = DBPATH+"appDB";
 	
