@@ -67,7 +67,7 @@ public class UserService {
 
 			// fetch path info
 			for (String path : data)
-				if (path != null) {
+				if (path != null && !path.contains("NULL")) {
 					Edge newPath = new Edge();
 					String[] pathArr = path.toString().split(" ");
 					if (!pathArr[0].equalsIgnoreCase("NULL"))
@@ -90,7 +90,7 @@ public class UserService {
 
 					// fetch path info
 					for (String path : data) {
-						if (path != null) {
+						if (path != null && !path.contains("NULL")) {
 							Edge newPath = new Edge();
 							String[] pathArr = path.toString().split(" ");
 							if (!pathArr[0].equalsIgnoreCase("NULL"))
@@ -124,7 +124,7 @@ public class UserService {
 		Set<Edge> paths = new HashSet<Edge>();
 		for (String path1 : data) {
 			String path = path1.toString();
-			if (path != null) {
+			if (path != null && !path.contains("NULL")) {
 				Edge newPath = new Edge();
 				String[] pathArr = path.toString().split(" ");
 				if (!pathArr[0].equalsIgnoreCase("NULL"))
