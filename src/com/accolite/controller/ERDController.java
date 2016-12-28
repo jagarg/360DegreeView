@@ -54,7 +54,7 @@ import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 public class ERDController {
 	
 	final static Logger logger = Logger.getLogger(ERDController.class);
-	public static String DBPATH = "plocal:F:\\orientdb-community-2.2.12\\databases\\";
+	public static String DBPATH = "plocal:D:\\orientdb-community-2.2.13\\databases\\";
 	//"plocal:C:\\Users\\hsareen\\Desktop\\db\\orientdb-community-2.2.13\\databases\\";
 	public static String ADMIN_DATABSE = DBPATH+"appDB";
 	
