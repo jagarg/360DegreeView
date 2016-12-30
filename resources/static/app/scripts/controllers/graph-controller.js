@@ -329,9 +329,9 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
 
   //this.$scope = $scope;
   $scope.displayGraph = function(t) {
-      $rootScope.$emit("DisplayGraph", {test : t});
+      $rootScope.$emit("DisplayGraph", {data : t});
   }
-  this.title = "Select Database";
+  this.title = "Select Configuration";
   this.toggle = false;
   this.databases = [];
   
@@ -364,6 +364,9 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
               tableResource.get(function (data) {
                   $scope.displayGraph(data);
               });                 
+      }
+      else {
+    	 $scope.clear();
       }
   };
       /** Ashish's code end **/
@@ -520,6 +523,8 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
     }
   };
   
+  //Hack to initialise Graph
+  
   var data = {
 	  '@class':'_studio',
 	  '@rid':'#33:32',
@@ -595,6 +600,7 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
 
 
   }
+  
   $scope.clear = function () {
     $scope.graph.clear();
     Graph.clear()
@@ -613,7 +619,7 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
         $scope.nodesLen = graph.nodes.length;
         $scope.edgesLen = graph.links.length;
       })
-      $scope.graph.on('node/click', function (v) {
+      /*$scope.graph.on('node/click', function (v) {
 
         var q = "SELECT outE().type.asSet() as out, inE().type.asSet() as in from " + v.source["rid"];
         CommandApi.queryText({
@@ -671,7 +677,7 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
             });
           }, 200);
         }
-      });
+      });*/
       $scope.graph.on('edge/create', function (v1, v2) {
 
         if (v2['rid'].startsWith("#-")) {
@@ -1152,81 +1158,13 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
   }
   
   $rootScope.$on("DisplayGraph", function(event, args){
-           $scope.query(args.test);
+           $scope.query(args.data);
         });
 
   $scope.query = function (temp) {
       $scope.graph.data(temp).redraw();
       $scope.currentIndex = -1;
   }
-
-  /*$scope.query = function () {
-
-    Spinner.start();
-    if ($scope.queryText.startsWith('g.')) {
-      $scope.language = 'gremlin';
-    } else {
-      $scope.language = 'sql';
-    }
-
-    var queryBuffer = $scope.queryText;
-    var selection = $scope.cm.getSelection();
-    if (selection && selection != "") {
-      queryBuffer = "" + selection;
-    }
-    CommandApi.graphQuery(queryBuffer, {
-      database: $routeParams.database,
-      language: $scope.language,
-      limit: $scope.config.limit
-    }).then(function (data) {
-      var temp = {
-                            "edges": [
-                                {
-                                "type": "Paths",
-                                "rid": "#1:1",
-                                "in": "#Table1",
-                                "out": "#Table2"
-                                },
-                                {
-                                "type": "Paths",
-                                "rid": "#2:1",
-                                "in": "#Table1",
-                                "out": "#Table3"
-                                }
-                            ],
-                            "vertices": [
-                                {
-                                "type": "Tables",
-                                "rid": "#Table1",
-                                "name": "Table_1"
-                                },
-                                {
-                                "type": "Tables",
-                                "rid": "#Table2",
-                                "name": "Table_2"
-                                },
-                                {
-                                "type": "Tables",
-                                "rid": "#Table3",
-                                "name": "Table_3"
-                                }
-                            ]
-                            } ;
-      $scope.graph.data(temp).redraw();
-      $scope.history = History.push(queryBuffer);
-      $scope.currentIndex = -1;
-      Spinner.stopSpinner();
-      $timeout(function () {
-        Graph.add(data.graph);
-      }, 1000);
-    }).catch(function (err) {
-      Spinner.stopSpinner();
-      Notification.push({content: err, error: true, autoHide: true});
-    })
-
-
-  }*/
-
 
 }])
 ;

@@ -17,28 +17,8 @@
                 multiple
                 bs-duallistbox>
         </select>
-                <p>You selected: {{vm.selectedTables}}</p>
         </div>
 </div> 
-    <div >
-        <button ng-show='vm.selectedTables.length' type="submit" class="btn btn-default btn-block" ng-click="vm.submit()">Show Relations</button>
-    </div>
-    <br>
-  <!--div class="row text-center" ng-show='vm.toggle'>
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4">
-        <table class="table table-hover table-bordered " >
-            <thead>
-                <tr>
-                    <th class="text-center" data-toggle="collapse" data-target="#tableBody">{{vm.singleTable.tableName}}</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody" class="collapse">
-                <tr ng-repeat="column in vm.singleTable.columns | orderBy : 'columnName'">
-                    <td>{{column.columnName}}</td>
-                </tr>
-        </table>
-    </div>
-    <div class="col-sm-4"></div>
-  </div-->
+<div >
+    <button ng-show='vm.selectedTables.length' type="submit" class="btn btn-default btn-block" ng-click="vm.submit()">Show Relations</button>
 </div>

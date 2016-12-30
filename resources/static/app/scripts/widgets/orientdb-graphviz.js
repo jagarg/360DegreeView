@@ -598,7 +598,7 @@ var OrientGraph = (function () {
 
     this.clearSelection = function () {
       self.selected = null;
-      self.menu.hide();
+      //self.menu.hide();
       self.edgeMenu.hide();
     }
     this.startEdgeCreation = function () {
@@ -664,22 +664,24 @@ var OrientGraph = (function () {
       })
 
 
-      this.clsLegend.append("circle")
-        .attr("r", 10)
-        .attr('y', function (d, i) {
-
-        })
+      this.clsLegend.append("rect")
+        .attr("height", 10)
+        .attr("width", 20)
+        .attr("x", -10)
+        .attr("y", -5)
         .attr("class", function (d) {
           return self.classesInCanvas.vertices.indexOf(d) == -1 ? "elem-invisible" : "";
         })
-        .style("fill", function (d) {
+        .style("fill","rgb(255,255,255)")
+        .style("stroke","rgb(0,0,0)");
+        /*.style("fill", function (d) {
           var fill = self.getClazzConfigVal(d, "fill");
           return fill ? fill : null;
         })
         .style("stroke", function (d) {
           var stroke = self.getClazzConfigVal(d, "stroke");
           return stroke ? stroke : null;
-        })
+        })*/
 
       this.clsLegend.append("line")
         .attr("x1", -10)
@@ -786,7 +788,7 @@ var OrientGraph = (function () {
         });
 
 
-      this.pathG.append('svg:text')
+      /*this.pathG.append('svg:text')
         .attr("class", function (d) {
           var cls = getClazzName(d.edge);
           var clsEdge = cls ? cls.toLowerCase() : "-e";
@@ -799,7 +801,7 @@ var OrientGraph = (function () {
         .attr("startOffset", "50%")
         .attr("xlink:href", function (d, i) {
           return "#linkId_" + i;
-        })
+        });
         .text(function (e) {
           return bindRealNameOrClazz(e.edge);
         }).on("click", function (e) {
@@ -808,7 +810,7 @@ var OrientGraph = (function () {
         if (self.topics['edge/click']) {
           self.topics['edge/click'](e);
         }
-      });
+      });*/
 
       this.path.exit().remove();
 
@@ -995,6 +997,7 @@ var OrientGraph = (function () {
 
 
       group.append('svg:text')
+      	.attr("visibility", "hidden")
         .attr('x', 0)
         .attr('y', function (d) {
           return parseInt(bindRadius(d)) + 15;
@@ -1006,8 +1009,9 @@ var OrientGraph = (function () {
           return bindColor(d, "displayColor");
         })
         .text(bindRealName);
+        
 
-      group.append('rect')
+        /*group.append('rect')
         .attr('x', bindBboxPos("x"))
         .attr('y', bindBboxPos("y"))
 
@@ -1018,7 +1022,7 @@ var OrientGraph = (function () {
         .style("stroke-width", 1)
         .style("stroke", bindRectColor)
         .style("fill", bindRectColor)
-
+*/
       this.circle.exit().remove();
       this.zoomComponent = d3.behavior.zoom()
         .scaleExtent([0.005, 500])
@@ -1186,8 +1190,8 @@ var OrientGraph = (function () {
       //}
 
 
-      radiusTarget = parseInt(radiusTarget);
-      radiusSource = parseInt(radiusSource);
+      radiusTarget = 0; // parseInt(radiusTarget);
+      radiusSource = 0; //parseInt(radiusSource);
       var deltaX = d.target.x - d.source.x,
         deltaY = d.target.y - d.source.y,
         dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
@@ -1371,7 +1375,7 @@ var OrientGraph = (function () {
 
       if (self.selected) {
         var selR = parseInt(bindRadius(self.selected));
-        self.menu.refreshPosition(selR, change);
+        //self.menu.refreshPosition(selR, change);
 
       }
     }
@@ -1637,12 +1641,12 @@ var OrientGraph = (function () {
       .attr("dx", 1)
       .text(function (d) {
         return d.name;
-      }).on("click", function (d) {
+      })/*.on("click", function (d) {
         if (d.onClick) {
           d3.event.stopPropagation();
           d.onClick(self.selectedEdge.d);
         }
-      });
+      })*/;
 
     var self = this;
     this.select = function (data) {
@@ -1961,7 +1965,7 @@ var OrientGraph = (function () {
 
       self.arc.innerRadius(selR);
       self.arc.outerRadius(selR + 40);
-      self.menu.attr("d", self.arc);
+      /*self.menu.attr("d", self.arc);
       if (change) {
         self.menu.transition()
           .ease("exp-out")
@@ -1975,7 +1979,7 @@ var OrientGraph = (function () {
       }
       self.menuText.attr("transform", function (d) {
         return "translate(" + self.arc.centroid(d) + ")";
-      })
+      })*/
     }
   }
 
