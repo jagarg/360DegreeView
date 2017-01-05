@@ -466,6 +466,10 @@ var OrientGraph = (function () {
         .attr('fill', '#000')
         .attr('class', 'end-arrow-hover');
 
+      this.svgContainer.append("rect")
+	      .attr("width", "100%")
+	      .attr("height", "100%")
+	      .attr("fill", "#c0c0c0");
 
       this.svg = this.svgContainer
         .attr('width', "100%")
@@ -947,8 +951,8 @@ var OrientGraph = (function () {
       function getDisplayTable(d){
         var tableName = d.source['tableName'];
         var displayTable =  
-              '<table class="table table-hover table-bordered " >'
-              +'<thead>'
+              '<table class="table table-inverse table-bordered " >'
+              +'<thead >'
               +'<tr>'
               +'     <th class="text-center" data-toggle="collapse" data-target="#'+ tableName + '">'+ tableName +'</th>'
               +'</tr>'
@@ -957,7 +961,7 @@ var OrientGraph = (function () {
         var columns = d.source['columns'];      
         for(var i=0;i<columns.length;i++){
                 displayTable += 
-                    '<tr>'
+                    '<tr align="center">'
                     +'<td>' + columns[i]['columnName'] + '</td>'
                     +'</tr>';
         }
@@ -1201,9 +1205,9 @@ var OrientGraph = (function () {
         normY = deltaY / (dist != 0 ? dist : 1),
         sourcePadding = d.left ? (radiusSource + padd) : radiusSource,
         targetPadding = d.right ? (radiusTarget + padd) : radiusTarget,
-        sourceX = d.source.x + (sourcePadding * normX),
+        sourceX = d.source.x + 90; //(sourcePadding * normX),
         sourceY = d.source.y + (sourcePadding * normY),
-        targetX = d.target.x - (targetPadding * normX),
+        targetX = d.target.x + 90; //(targetPadding * normX),
         targetY = d.target.y - (targetPadding * normY);
       // Config Node - > Label
 
