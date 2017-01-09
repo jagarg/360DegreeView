@@ -40,6 +40,8 @@ public class UserDAO {
 				list.add(vertex.getProperty("tableName"));
 			}
 
+			Collections.sort(list);
+
 			graph.commit();
 		} catch (Exception e) {
 			logger.error(e.getMessage() + "\t" + e.getCause());

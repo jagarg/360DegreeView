@@ -6,6 +6,7 @@
 var OrientGraph = (function () {
 
   var graph = {};
+  var copiedText = "";
 
   function OGraph(elem, config, metadata, menuActions, edgeActions) {
 
@@ -743,7 +744,6 @@ var OrientGraph = (function () {
           return bindStrokeWidth(d.edge);
         })
 
-
       this.pathG.append('svg:path')
         .attr("class", function (d) {
           return "path-overlay pointer";
@@ -783,14 +783,68 @@ var OrientGraph = (function () {
         })
         .on("click", function (e) {
           d3.event.stopPropagation();
-
-          var node = d3.select(this.parentNode).select("text.elabel").node();
-          self.edgeMenu.select({elem: node, d: e})
-          if (self.topics['edge/click']) {
-            self.topics['edge/click'](e);
-          }
+         
+       this.copyBtn = d3.select(this.parentNode).select("foreignObject.copy-query").node();   
+       //this.clipboard2.action(e);
+       
+       if(this.copyBtn.attributes[0].value == "visible"){
+        	 this.copyBtn.attributes[0].value = "hidden";
+         }
+         else{
+        	 this.copyBtn.attributes[0].value = "visible";
+        	 copiedText = setJoinQuery(e.edge,e.graph.vertices);
+        	 if (self.topics['edge/click']) {
+               self.topics['edge/click'](e);
+             }
+         }
+        });
+      
+      this.pathG.append('svg:text')
+      	.attr("visibility", "hidden")
+      	.attr("class", function (d) {
+          var cls = getClazzName(d.edge);
+          var clsEdge = cls ? cls.toLowerCase() : "-e";
+          return "elabel elabel-" + clsEdge;
+        })
+        .style("text-anchor", "middle")
+        .attr("dy", "-8")
+        .append("textPath")
+        .attr("startOffset", "50%")
+        .attr("id", function (d, i) {
+          return "linkId_" + i;
+        })
+        .attr("xlink:href", function (d, i) {
+          return "#linkId_" + i;
+        })
+        .text(function (e) {
+          return setJoinQuery(e.edge,e.graph.vertices);
         });
 
+      
+     this.pathG.append("foreignObject")
+     .attr("visibility","hidden")
+     .attr("class", "copy-query")
+     .attr("x", "1000") 
+     .attr("y", "0")
+      .append("xhtml:body")
+      .html(function (d) {
+        return getCopyQueryButton(d);
+      });
+
+    
+    this.clipboard = new Clipboard('.copy-query-btn', {
+        text: function() {
+            return copiedText;
+        }
+    });
+    
+    function getCopyQueryButton(d){
+        var copyQueryButton = 
+      	  '<button class="copy-query-btn" data-title="Copy Query" id="copyQuery"  bs-tooltip>'
+      	  + '<i class="fa fa-save"> </i>'
+      	  + '</button>';
+        return copyQueryButton;
+      }
 
       /*this.pathG.append('svg:text')
         .attr("class", function (d) {
@@ -1151,6 +1205,22 @@ var OrientGraph = (function () {
 
       return name != null ? name : rid;
     }
+    
+    function setJoinQuery(d,v) {
+    	var clazz = getClazzName(d);
+    	var name = self.getClazzConfigVal(clazz, "display", d);
+    	var srcColumns = "";
+    	var tarColumns = "";
+    	v[getSourceTable(d)].source.columns.forEach(function(item){
+    		srcColumns= srcColumns +  "t1." + item.columnName + ", ";
+		});
+    	v[getTargetTable(d)].source.columns.forEach(function(item){
+    				tarColumns= tarColumns +  "t2." + item.columnName + ", ";
+    			});
+    	tarColumns = tarColumns.slice(0,-2);
+    	
+    	return "select " + srcColumns + tarColumns + " from " + getSourceTable(d) + " t1 inner join " + getTargetTable(d) + " t2 on t1." + getSourceColumn(d) + " = t2." + getTargetColumn(d); 
+    }
 
     function bindRealNameOrClazz(d) {
 
@@ -1159,6 +1229,14 @@ var OrientGraph = (function () {
       return getSourceColumn(d) + "=" + getTargetColumn(d);
       //return name != null ? name : clazz;
     }
+    
+    function getSourceTable(d) {
+        return d['out'];
+      }
+    
+    function getTargetTable(d) {
+        return d['in'];
+      }
 
     function getSourceColumn(d) {
       return d['sourceColumn'];

@@ -5,7 +5,6 @@
     
         <div class="panel-body">
             <select class="form-control" 
-                        ng-init="vm.selectedDB = vm.databases[0]" 
                         ng-model="vm.selectedDB"
                         ng-options="database.dataModelName for database in vm.databases | orderBy">
             </select>
@@ -13,7 +12,7 @@
         <div ng-repeat="database in vm.databases" ng-if="database.dataModelName == vm.selectedDB.dataModelName">
         <select
                 ng-model="vm.selectedTables"
-                ng-options="table for table in database.tables | orderBy"
+                ng-options="table for table in database.tables"
                 multiple
                 bs-duallistbox>
         </select>

@@ -706,11 +706,16 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
           fullscreen: scope.fullscreen
         });
       }
-
+      
       $scope.graph.on('edge/click', function (e) {
+          $scope.$apply(function () {
+              Notification.push({content: 'Join Query copied to Clipboard', autoHide: true});
+            });
+        });
 
+      /*$scope.graph.on('edge/click', function (e) {
 
-        if (typeof e.edge == 'string') {
+    	 if (typeof e.edge == 'string') {
           DocumentApi.get({database: $routeParams.database, document: e.edge}, function (doc) {
             e.edge = doc;
             if (Aside.isOpen()) {
@@ -723,7 +728,8 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
         }
 
 
-      });
+      });*/
+      
       $scope.graph.on('node/dblclick', function (v) {
 
         if (v['rid'].startsWith("#-")) {
