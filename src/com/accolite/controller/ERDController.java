@@ -54,7 +54,7 @@ import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 public class ERDController {
 	
 	final static Logger logger = Logger.getLogger(ERDController.class);
-	public static String DBPATH = "plocal:D:\\orientdb-community-2.2.13\\databases\\";
+	public static String DBPATH = "plocal:C:\\dev\\orientdb-community-2.2.13\\databases\\";
 	//"plocal:C:\\Users\\hsareen\\Desktop\\db\\orientdb-community-2.2.13\\databases\\";
 	public static String ADMIN_DATABSE = DBPATH+"appDB";
 	
@@ -119,8 +119,7 @@ public class ERDController {
 	    		//parse the config files
 	    		model = JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarDirectory.getAbsolutePath(), new ArrayList<String>(),"jdo"),classDirectory.getAbsolutePath());
 	    		
-	    		//OrientLoader.initiateLoad(model,configuration);
-	    		
+	    		OrientLoader.initiateLoad(model,configuration);
 	    		logger.info("Processing JDO files Completes !!");
 	    	break;
 	    	

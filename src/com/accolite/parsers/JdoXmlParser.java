@@ -27,6 +27,7 @@ public class JdoXmlParser {
 
 	public static Model ParseJdoXml(ArrayList<String> files,String classPath) {
 		Model model = new Model();
+		System.out.println("Parse Model Started !!!");
 		for (String file : files) {
 			TableDetail table = new TableDetail();
 			table_found = false;
@@ -83,7 +84,6 @@ public class JdoXmlParser {
 			model.getTableMap().put(table.getClassName(), table);
 		}
 		
-		
 		//enrich the jdo Model
 		try {
 			Utility.enrichJdoModel(model,classPath);
@@ -92,6 +92,7 @@ public class JdoXmlParser {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Parse Model Completed !!!");
 		return model;
 	}
 

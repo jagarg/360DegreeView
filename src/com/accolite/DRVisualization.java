@@ -26,13 +26,27 @@ public class DRVisualization {
 	
 	public static void main(String[] a){
 		
-		String jarPath = "C:/Users/hsareen/Desktop/Jay/jar";//C:/dev/gc/submodules/runtime/lib/common";
+		File fileDirectory = new File("C://Users//JAGARG//git//DR_Visualizer//subs//");//C:/dev/gc/submodules/runtime/lib/common";
+		//create unjar/unip folder
+		File unJarDirectory = new File(fileDirectory.getAbsolutePath()+"//unjar");
+		//unJarDirectory.mkdir();
 		
-	//	Utility.extractJarAndZipFiles(jarPath,unJarPath,".jdo");
+		//create unjar/unip folder
+		File classDirectory = new File(fileDirectory.getAbsolutePath()+"//classes");
+		classDirectory.mkdir();
 		
+		//calling unjar utility
+		//Utility.extractJarAndZipFiles(fileDirectory.getAbsolutePath(),unJarDirectory.getAbsolutePath(),classDirectory.getAbsolutePath(),".jdo");
 		
-		
-		//model = JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarPath, new ArrayList<String>(),"jdo"));
+		try{
+		//parse the config files
+		System.out.println("Creating Model");
+		model = JdoXmlParser.ParseJdoXml(Utility.listOfFiles(unJarDirectory.getAbsolutePath(), new ArrayList<String>(),"jdo"),classDirectory.getAbsolutePath());
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 		
 		//Enrich the model
 		
