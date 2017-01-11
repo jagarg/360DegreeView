@@ -331,6 +331,9 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
   $scope.displayGraph = function(t) {
       $rootScope.$emit("DisplayGraph", {data : t});
   }
+  $scope.clearGraph = function(t) {
+      $rootScope.$emit("ClearGraph");
+  }
   this.title = "Select Configuration";
   this.toggle = false;
   this.databases = [];
@@ -362,11 +365,11 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
           }  
           var tableResource = dataAccessService.getTableResource(url);
               tableResource.get(function (data) {
-                  $scope.displayGraph(data);
+            	  $scope.displayGraph(data);
               });                 
       }
       else {
-    	 $scope.clear();
+    	 $scope.clearGraph();
       }
   };
       /** Ashish's code end **/
@@ -709,7 +712,7 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
       
       $scope.graph.on('edge/click', function (e) {
           $scope.$apply(function () {
-              Notification.push({content: 'Join Query copied to Clipboard', autoHide: true});
+              Notification.push({content: 'Join Query Copied to Clipboard', autoHide: true});
             });
         });
 
@@ -1166,6 +1169,9 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
   $rootScope.$on("DisplayGraph", function(event, args){
            $scope.query(args.data);
         });
+  $rootScope.$on("ClearGraph", function(event){
+      $scope.clear();
+   });
 
   $scope.query = function (temp) {
       $scope.graph.data(temp).redraw();

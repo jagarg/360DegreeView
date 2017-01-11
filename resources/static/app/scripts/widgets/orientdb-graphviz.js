@@ -7,6 +7,7 @@ var OrientGraph = (function () {
 
   var graph = {};
   var copiedText = "";
+  var clipboard = "";
 
   function OGraph(elem, config, metadata, menuActions, edgeActions) {
 
@@ -783,19 +784,10 @@ var OrientGraph = (function () {
         })
         .on("click", function (e) {
           d3.event.stopPropagation();
-         
-       this.copyBtn = d3.select(this.parentNode).select("foreignObject.copy-query").node();   
-       //this.clipboard2.action(e);
-       
-       if(this.copyBtn.attributes[0].value == "visible"){
-        	 this.copyBtn.attributes[0].value = "hidden";
-         }
-         else{
-        	 this.copyBtn.attributes[0].value = "visible";
-        	 copiedText = setJoinQuery(e.edge,e.graph.vertices);
-        	 if (self.topics['edge/click']) {
-               self.topics['edge/click'](e);
-             }
+    	 copiedText = setJoinQuery(e.edge,e.graph.vertices);
+    	 clipboard.onClick(d3.event);
+    	 if (self.topics['edge/click']) {
+           self.topics['edge/click'](e);
          }
         });
       
@@ -819,59 +811,14 @@ var OrientGraph = (function () {
         .text(function (e) {
           return setJoinQuery(e.edge,e.graph.vertices);
         });
-
-      
-     this.pathG.append("foreignObject")
-     .attr("visibility","hidden")
-     .attr("class", "copy-query")
-     .attr("x", "1000") 
-     .attr("y", "0")
-      .append("xhtml:body")
-      .html(function (d) {
-        return getCopyQueryButton(d);
-      });
-
-    
-    this.clipboard = new Clipboard('.copy-query-btn', {
-        text: function() {
-            return copiedText;
-        }
-    });
-    
-    function getCopyQueryButton(d){
-        var copyQueryButton = 
-      	  '<button class="copy-query-btn" data-title="Copy Query" id="copyQuery"  bs-tooltip>'
-      	  + '<i class="fa fa-save"> </i>'
-      	  + '</button>';
-        return copyQueryButton;
-      }
-
-      /*this.pathG.append('svg:text')
-        .attr("class", function (d) {
-          var cls = getClazzName(d.edge);
-          var clsEdge = cls ? cls.toLowerCase() : "-e";
-          return "elabel elabel-" + clsEdge;
-        })
-
-        .style("text-anchor", "middle")
-        .attr("dy", "-8")
-        .append("textPath")
-        .attr("startOffset", "50%")
-        .attr("xlink:href", function (d, i) {
-          return "#linkId_" + i;
-        });
-        .text(function (e) {
-          return bindRealNameOrClazz(e.edge);
-        }).on("click", function (e) {
-        d3.event.stopPropagation();
-        self.edgeMenu.select({elem: this, d: e})
-        if (self.topics['edge/click']) {
-          self.topics['edge/click'](e);
-        }
-      });*/
-
+     
+     clipboard = new Clipboard('.pointer', {
+         text: function() {
+             return copiedText;
+         }
+     });     
+ 
       this.path.exit().remove();
-
 
       var g = this.circle.enter().append('svg:g').attr('class', bindClassName);
 
@@ -1283,9 +1230,9 @@ var OrientGraph = (function () {
         normY = deltaY / (dist != 0 ? dist : 1),
         sourcePadding = d.left ? (radiusSource + padd) : radiusSource,
         targetPadding = d.right ? (radiusTarget + padd) : radiusTarget,
-        sourceX = d.source.x + 90; //(sourcePadding * normX),
+        sourceX = d.source.x + (sourcePadding * normX),
         sourceY = d.source.y + (sourcePadding * normY),
-        targetX = d.target.x + 90; //(targetPadding * normX),
+        targetX = d.target.x + (targetPadding * normX),
         targetY = d.target.y - (targetPadding * normY);
       // Config Node - > Label
 
