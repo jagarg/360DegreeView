@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.accolite.dao.UserDAO;
 import com.accolite.datamodel.Column;
+import com.accolite.datamodel.DetailedEdgeInfo;
 import com.accolite.datamodel.Edge;
 import com.accolite.datamodel.Table;
 import com.accolite.datamodel.TableMapping;
@@ -89,6 +90,7 @@ public class UserService {
 							database, tableList[i], tableList[j]);
 
 					// fetch path info
+					DetailedEdgeInfo detailEdgeInfo = new DetailedEdgeInfo(tableList[i], tableList[j]);
 					for (String path : data) {
 						if (path != null && !path.contains("NULL")) {
 							Edge newPath = new Edge();
@@ -102,10 +104,14 @@ public class UserService {
 							if (!pathArr[3].equalsIgnoreCase("NULL"))
 								newPath.setTargetColumn(pathArr[3]);
 							newPath.setRid("#"+data.indexOf(path));
+							if(!pathArr[0].equalsIgnoreCase("NULL") && !pathArr[2].equalsIgnoreCase("NULL"))
+								detailEdgeInfo.getEdges().add(newPath);
 							tableMapping.getEdges().add(newPath);
 						}
 					}
+					tableMapping.getDetailedEdgeInfo().add(detailEdgeInfo);
 				}
+				
 			}
 		}
 		// fetch table info
