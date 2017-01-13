@@ -109,7 +109,7 @@ public class UserService {
 							tableMapping.getEdges().add(newPath);
 						}
 					}
-					tableMapping.getDetailedEdgeInfo().add(detailEdgeInfo);
+					tableMapping.getDetailedEdgeInfoList().add(detailEdgeInfo);
 				}
 				
 			}

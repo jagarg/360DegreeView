@@ -29,12 +29,12 @@ public class TableMapping {
 		this.edges = edges;
 	}
 
-	public List<DetailedEdgeInfo> getDetailedEdgeInfo() {
+	public List<DetailedEdgeInfo> getDetailedEdgeInfoList() {
 		return detailedEdgeInfoList;
 	}
 
-	public void setDetailedEdgeInfo(List<DetailedEdgeInfo> detailedEdgeInfo) {
-		this.detailedEdgeInfoList = detailedEdgeInfo;
+	public void setDetailedEdgeInfoList(List<DetailedEdgeInfo> detailedEdgeInfoList) {
+		this.detailedEdgeInfoList = detailedEdgeInfoList;
 	}
 
 	@JsonIgnore

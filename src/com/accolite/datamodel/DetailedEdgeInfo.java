@@ -1,12 +1,15 @@
 package com.accolite.datamodel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DetailedEdgeInfo {
 
 	String sourceTable;
 	String targetTable;
 	ArrayList<Edge> edges = new ArrayList<Edge>();
+	private Set<String> intermediaryTables = new HashSet<String>();
 
 	public DetailedEdgeInfo() {
 		sourceTable = "";
@@ -41,5 +44,18 @@ public class DetailedEdgeInfo {
 	public void setEdges(ArrayList<Edge> edges) {
 		this.edges = edges;
 	}
+	
+	public Set<String> getIntermediaryTables() {
+		for(Edge edge : edges){
+			intermediaryTables.add(edge.getOut());
+			intermediaryTables.add(edge.getIn());
+		}
+		intermediaryTables.remove(sourceTable);
+		intermediaryTables.remove(targetTable);
+		return intermediaryTables;
+	}
 
+	public void setIntermediaryTables(Set<String> tables) {
+		this.intermediaryTables = tables;
+	}
 }
