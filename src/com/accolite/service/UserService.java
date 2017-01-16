@@ -108,11 +108,7 @@ public class UserService {
 								tableMapping.getEdgeRid().put(pathArr[0]+pathArr[2],tableMapping.generateUniqueId());
 							newPath.setRid("#"+tableMapping.getEdgeRid().get(pathArr[0]+pathArr[2]));
 							if(!pathArr[0].equalsIgnoreCase("NULL") && !pathArr[2].equalsIgnoreCase("NULL"))
-								try {
-									detailEdgeInfo.getEdges().add((Edge)newPath.clone());
-								} catch (CloneNotSupportedException e) {
-									e.printStackTrace();
-								}
+									detailEdgeInfo.getEdges().add(newPath);
 							tableMapping.getEdges().add(newPath);
 						}
 					}

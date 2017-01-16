@@ -38,9 +38,6 @@ public class DetailedEdgeInfo {
 	}
 
 	public ArrayList<Edge> getEdges() {
-		for(Edge edge : edges){
-			edge.setType("DetailedEdges");
-		}
 		return edges;
 	}
 
