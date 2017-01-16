@@ -317,6 +317,7 @@ var OrientGraph = (function () {
         self.put([v["rid"]], v);
       }
     }
+    
     this.addEdge = function (e) {
       var v1 = e.right ? e.source : e.target;
       var v2 = e.right ? e.target : e.source;
@@ -704,6 +705,12 @@ var OrientGraph = (function () {
         .style("stroke", function (d) {
           var stroke = self.getClazzConfigVal(d, "stroke");
           return stroke ? stroke : null;
+        }) 
+        .style('stroke-linecap', function (d) {
+            return d == "Indirect-Path" ? "round" : null;
+        })
+        .style('stroke-dasharray', function (d) {
+        	return d == "Indirect-Path" ? "1,10,1" : null;
         })
 
       var txt = this.clsLegend.append("text")
@@ -731,10 +738,10 @@ var OrientGraph = (function () {
           return "linkId_" + i;
         })
         .style('marker-start', function (d) {
-          return d.left ? 'url(#start-arrow)' : '';
+          return d.left && d.label!="Indirect-Path" ? 'url(#start-arrow)' : '';
         })
         .style('marker-end', function (d) {
-          return d.right ? 'url(#end-arrow)' : '';
+          return d.right && d.label!="Indirect-Path" ? 'url(#end-arrow)' : '';
         })
 
         .style('stroke', function (d) {
@@ -743,7 +750,13 @@ var OrientGraph = (function () {
         .style("stroke-width", function (d) {
           return bindStrokeWidth(d.edge);
         })
-
+        .style('stroke-linecap', function (d) {
+          return bindStrokeLinecap(d.edge);
+        })
+        .style('stroke-dasharray', function (d) {
+          return bindStrokeDasharray(d.edge);
+        })
+        
       this.pathG.append('svg:path')
         .attr("class", function (d) {
           return "path-overlay pointer";
@@ -754,7 +767,7 @@ var OrientGraph = (function () {
         })
         .style("stroke-width", function (d) {
           return parseInt(bindStrokeWidth(d.edge)) + 15;
-        })
+        }) 
         .on("mouseover", function (d) {
 
           d3.select(this).style("opacity", "0.3");
@@ -1097,11 +1110,34 @@ var OrientGraph = (function () {
       }
       return fill;
     }
+    
+    function bindStrokeLinecap(d) {
+	    var clsName = getClazzName(d);
+	    var strokeLinecap = self.getClazzConfigVal(clsName, "stroke-linecap");
+	    if (!strokeLinecap && clsName == "Indirect-Path") {
+	    	strokeLinecap = "round";
+	      self.changeClazzConfig(clsName, "stroke-linecap", strokeLinecap);
+	    }
+	    return strokeLinecap;
+	
+	 }
+    
+    function bindStrokeDasharray(d) {
+        var clsName = getClazzName(d);
+        var strokeDasharray = self.getClazzConfigVal(clsName, "stroke-dasharray");
+        if (!strokeDasharray && clsName == "Indirect-Path") {
+        	strokeDasharray = "1,10,1";
+          self.changeClazzConfig(clsName, "stroke-dasharray", strokeDasharray);
+        }
+        return strokeDasharray;
+
+      }
 
     function bindStroke(d) {
       var clsName = getClazzName(d);
       var stroke = self.getClazzConfigVal(clsName, "stroke");
       if (!stroke) {
+    	  
         stroke = d3.rgb(self.colors(clsName.toString(2))).darker().toString();
         self.changeClazzConfig(clsName, "stroke", stroke);
       }
@@ -1153,8 +1189,7 @@ var OrientGraph = (function () {
     }
     
     function setJoinQuery(d,v) {
-    	var clazz = getClazzName(d);
-    	var name = self.getClazzConfigVal(clazz, "display", d);
+    	
     	var srcColumns = "";
     	var tarColumns = "";
     	v[getSourceTable(d)].source.columns.forEach(function(item){
@@ -1164,8 +1199,12 @@ var OrientGraph = (function () {
     				tarColumns= tarColumns +  "t2." + item.columnName + ", ";
     			});
     	tarColumns = tarColumns.slice(0,-2);
-    	
-    	return "select " + srcColumns + tarColumns + " from " + getSourceTable(d) + " t1 inner join " + getTargetTable(d) + " t2 on t1." + getSourceColumn(d) + " = t2." + getTargetColumn(d); 
+    if(d['type'] == "Path"){	
+	    	return "select " + srcColumns + tarColumns + " from " + getSourceTable(d) + " t1 inner join " + getTargetTable(d) + " t2 on t1." + getSourceColumn(d) + " = t2." + getTargetColumn(d); 
+    	}
+    	else if (d['type'] == "Indirect-Path"){
+    		return "select " + srcColumns + tarColumns + " from " + getSourceTable(d) + " t1, " + getIntermediaryTables(d) + getTargetTable(d) + " t2 where " + getJoinConditon(d);
+    	}
     }
 
     function bindRealNameOrClazz(d) {
@@ -1177,13 +1216,56 @@ var OrientGraph = (function () {
     }
     
     function getSourceTable(d) {
-        return d['out'];
-      }
-    
-    function getTargetTable(d) {
-        return d['in'];
+    	if(d['type'] == "Path")
+    		return d['out'];
+    	else if(d['type'] == "Indirect-Path")
+    		return d['sourceTable'];
       }
 
+    function getTargetTable(d) {
+    	if(d['type'] == "Path")
+    		return d['in'];
+    	else if(d['type'] == "Indirect-Path")
+    		return d['targetTable'];
+      }
+    
+    function getIntermediaryTables(d){
+    	var tables = "";
+    	d.intermediaryTables.forEach(function(item){
+    		tables= tables + item + ", ";
+		});
+    	return tables;
+    }
+    
+    function getJoinConditon(d){
+    	var condition = "";
+    	var src = d['sourceTable'];
+    	var trgt = d ['targetTable'];
+    	d.edges.forEach(function(item){
+    		var source = item['out'];
+    		var target = item['in'];
+    		if(source == src)
+    		{
+    			source = "t1";  
+    		}
+    		else if(target == src)
+    		{
+    			target = "t1";  
+    		}
+    		if(source == trgt)
+    		{
+    			source = "t2";  
+    		}
+    		else if(target == trgt)
+    		{
+    			target = "t2";  
+    		}
+    		
+    		condition= condition + source + "." + item['sourceColumn'] + " = " + target + "." + item['targetColumn'] + " and " ;
+		});    	
+    	return condition.slice(0,-5);
+    }
+    
     function getSourceColumn(d) {
       return d['sourceColumn'];
     }
@@ -2064,6 +2146,7 @@ var OrientGraph = (function () {
           //this.dataArray(data);
         } else {
           var self = this;
+          var edgeSet = new Set();
           if (data.vertices) {
             data.vertices.forEach(function (elem) {
               var v = self.get(elem['rid']);
@@ -2078,7 +2161,7 @@ var OrientGraph = (function () {
               }
             })
           }
-          if (data.edges) {
+/*          if (data.edges) {
             data.edges.forEach(function (elem) {
               var v1 = self.get(elem['from']) || self.get(elem['out']);
               var v2 = self.get(elem['to']) || self.get(elem['in']);
@@ -2091,7 +2174,44 @@ var OrientGraph = (function () {
                 }
               }
             })
-          }
+          }*/
+          if (data.detailedEdgeInfoList) {
+              data.detailedEdgeInfoList.forEach(function (elem) {	            	
+            	  if (elem.edges) {
+                      elem.edges.forEach(function (edg) {
+                    	if(!edgeSet.has(edg["rid"])){
+                    		edgeSet.add(edg["rid"]);
+                    		var v1 = self.get(edg['from']) || self.get(edg['out']);
+                            var v2 = self.get(edg['to']) || self.get(edg['in']);
+                            var e = new OEdge(self, v1, v2, edg['type'], edg);
+                            self.addEdge(e);
+
+                            if (edg["type"]) {
+                              if (self.classesInCanvas.edges.indexOf(edg["type"]) == -1) {
+                                self.classesInCanvas.edges.push(edg["type"]);
+                              }
+                            }                   		
+                    	}                        
+                      })
+                    }
+            	  
+            	  if(elem['intermediaryTables'].length != 0){  
+		                var v1 = self.get(elem['sourceTable']) || self.get(elem['out']);
+		                var v2 = self.get(elem['targetTable']) || self.get(elem['in']);
+			            if((v1 != null) && (v2 != null)){
+			            	elem.type = "Indirect-Path";			            
+			                var e = new OEdge(self, v1, v2,elem['type'] , elem);
+			                self.addEdge(e);
+			
+			                if (elem["type"]) {
+			                  if (self.classesInCanvas.edges.indexOf(elem["type"]) == -1) {
+			                    self.classesInCanvas.edges.push(elem["type"]);
+			                  }
+			                }
+			            }
+	              }		         
+              })
+            }
         }
       }
       return this;
