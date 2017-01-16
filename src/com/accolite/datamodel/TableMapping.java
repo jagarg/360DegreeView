@@ -11,6 +11,7 @@ public class TableMapping {
 
 	private List<Table> vertices = new ArrayList<Table>();
 	private Set<Edge> edges = new HashSet<Edge>();
+	private List<DetailedEdgeInfo> detailedEdgeInfoList = new ArrayList<DetailedEdgeInfo>();
 
 	public List<Table> getVertices() {
 		return vertices;
@@ -26,6 +27,14 @@ public class TableMapping {
 
 	public void setEdges(Set<Edge> edges) {
 		this.edges = edges;
+	}
+
+	public List<DetailedEdgeInfo> getDetailedEdgeInfoList() {
+		return detailedEdgeInfoList;
+	}
+
+	public void setDetailedEdgeInfoList(List<DetailedEdgeInfo> detailedEdgeInfoList) {
+		this.detailedEdgeInfoList = detailedEdgeInfoList;
 	}
 
 	@JsonIgnore
