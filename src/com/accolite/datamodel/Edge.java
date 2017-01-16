@@ -1,6 +1,6 @@
 package com.accolite.datamodel;
 
-public class Edge {
+public class Edge implements Cloneable {
 	String type;
 	String rid;
 	String out;
@@ -69,4 +69,10 @@ public class Edge {
 	public int hashCode(){
 		return (out.hashCode()*sourceColumn.hashCode()*in.hashCode()*targetColumn.hashCode());
 	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	
 }

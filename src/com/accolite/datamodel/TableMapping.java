@@ -1,9 +1,12 @@
 package com.accolite.datamodel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -12,6 +15,8 @@ public class TableMapping {
 	private List<Table> vertices = new ArrayList<Table>();
 	private Set<Edge> edges = new HashSet<Edge>();
 	private List<DetailedEdgeInfo> detailedEdgeInfoList = new ArrayList<DetailedEdgeInfo>();
+	
+	private Map<String,Integer> edgeRid = new HashMap<String,Integer>();
 
 	public List<Table> getVertices() {
 		return vertices;
@@ -35,6 +40,21 @@ public class TableMapping {
 
 	public void setDetailedEdgeInfoList(List<DetailedEdgeInfo> detailedEdgeInfoList) {
 		this.detailedEdgeInfoList = detailedEdgeInfoList;
+	}
+	
+	@JsonIgnore
+	public Map<String, Integer> getEdgeRid() {
+		return edgeRid;
+	}
+
+	public void setEdgeRid(Map<String, Integer> edgeRid) {
+		this.edgeRid = edgeRid;
+	}
+	
+	@JsonIgnore
+	public int generateUniqueId(){
+		return ThreadLocalRandom.current().nextInt(0, 10000);
+		
 	}
 
 	@JsonIgnore

@@ -103,9 +103,16 @@ public class UserService {
 								newPath.setIn(pathArr[2]);
 							if (!pathArr[3].equalsIgnoreCase("NULL"))
 								newPath.setTargetColumn(pathArr[3]);
-							newPath.setRid("#"+data.indexOf(path));
+							
+							if(tableMapping.getEdgeRid().get(pathArr[0]+pathArr[2])==null)
+								tableMapping.getEdgeRid().put(pathArr[0]+pathArr[2],tableMapping.generateUniqueId());
+							newPath.setRid("#"+tableMapping.getEdgeRid().get(pathArr[0]+pathArr[2]));
 							if(!pathArr[0].equalsIgnoreCase("NULL") && !pathArr[2].equalsIgnoreCase("NULL"))
-								detailEdgeInfo.getEdges().add(newPath);
+								try {
+									detailEdgeInfo.getEdges().add((Edge)newPath.clone());
+								} catch (CloneNotSupportedException e) {
+									e.printStackTrace();
+								}
 							tableMapping.getEdges().add(newPath);
 						}
 					}
