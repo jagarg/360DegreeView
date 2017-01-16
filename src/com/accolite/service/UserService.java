@@ -71,16 +71,20 @@ public class UserService {
 				if (path != null && !path.contains("NULL")) {
 					Edge newPath = new Edge();
 					String[] pathArr = path.toString().split(" ");
-					if (!pathArr[0].equalsIgnoreCase("NULL"))
+					if (!pathArr[0].equalsIgnoreCase("NULL")){
 						newPath.setOut(pathArr[0]);
+						tableMapping.getTables().add(pathArr[0]);
+					}
 					if (!pathArr[1].equalsIgnoreCase("NULL"))
 						newPath.setSourceColumn(pathArr[1]);
-					if (!pathArr[2].equalsIgnoreCase("NULL"))
+					if (!pathArr[2].equalsIgnoreCase("NULL")){
 						newPath.setIn(pathArr[2]);
+						tableMapping.getTables().add(pathArr[2]);
+					}
 					if (!pathArr[3].equalsIgnoreCase("NULL"))
 						newPath.setTargetColumn(pathArr[3]);
 					newPath.setRid("#"+data.indexOf(path));
-					tableMapping.getEdges().add(newPath);
+					
 				}
 		} else {
 			for (int i = 0; i < tableList.length - 1; i++) {
@@ -95,12 +99,16 @@ public class UserService {
 						if (path != null && !path.contains("NULL")) {
 							Edge newPath = new Edge();
 							String[] pathArr = path.toString().split(" ");
-							if (!pathArr[0].equalsIgnoreCase("NULL"))
+							if (!pathArr[0].equalsIgnoreCase("NULL")){
 								newPath.setOut(pathArr[0]);
+								tableMapping.getTables().add(pathArr[0]);
+							}
 							if (!pathArr[1].equalsIgnoreCase("NULL"))
 								newPath.setSourceColumn(pathArr[1]);
-							if (!pathArr[2].equalsIgnoreCase("NULL"))
+							if (!pathArr[2].equalsIgnoreCase("NULL")){
 								newPath.setIn(pathArr[2]);
+								tableMapping.getTables().add(pathArr[2]);
+							}
 							if (!pathArr[3].equalsIgnoreCase("NULL"))
 								newPath.setTargetColumn(pathArr[3]);
 							
@@ -109,7 +117,6 @@ public class UserService {
 							newPath.setRid("#"+tableMapping.getEdgeRid().get(pathArr[0]+pathArr[2]));
 							if(!pathArr[0].equalsIgnoreCase("NULL") && !pathArr[2].equalsIgnoreCase("NULL"))
 									detailEdgeInfo.getEdges().add(newPath);
-							tableMapping.getEdges().add(newPath);
 						}
 					}
 					tableMapping.getDetailedEdgeInfoList().add(detailEdgeInfo);
@@ -118,7 +125,7 @@ public class UserService {
 			}
 		}
 		// fetch table info
-		for (String table : tableMapping.getTableNames())
+		for (String table : tableMapping.getTables())
 			tableMapping.getVertices().add(getTable(database, table));
 		return tableMapping;
 	}
@@ -136,22 +143,25 @@ public class UserService {
 			if (path != null && !path.contains("NULL")) {
 				Edge newPath = new Edge();
 				String[] pathArr = path.toString().split(" ");
-				if (!pathArr[0].equalsIgnoreCase("NULL"))
+				if (!pathArr[0].equalsIgnoreCase("NULL")){
 					newPath.setOut(pathArr[0]);
+					tableMapping.getTables().add(pathArr[0]);
+				}
 				if (!pathArr[1].equalsIgnoreCase("NULL"))
 					newPath.setSourceColumn(pathArr[1]);
-				if (!pathArr[2].equalsIgnoreCase("NULL"))
+				if (!pathArr[2].equalsIgnoreCase("NULL")){
 					newPath.setIn(pathArr[2]);
+					tableMapping.getTables().add(pathArr[2]);
+				}
 				if (!pathArr[3].equalsIgnoreCase("NULL"))
 					newPath.setTargetColumn(pathArr[3]);
 				newPath.setRid("#"+data.indexOf(path1));
 				paths.add(newPath);
 			}
 		}
-		tableMapping.setEdges(paths);
 
 		// fetch table info
-		for (String table : tableMapping.getTableNames())
+		for (String table : tableMapping.getTables())
 			tableMapping.getVertices().add(getTable(database, table));
 		return tableMapping;
 	}

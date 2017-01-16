@@ -13,10 +13,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class TableMapping {
 
 	private List<Table> vertices = new ArrayList<Table>();
-	private Set<Edge> edges = new HashSet<Edge>();
 	private List<DetailedEdgeInfo> detailedEdgeInfoList = new ArrayList<DetailedEdgeInfo>();
 	
 	private Map<String,Integer> edgeRid = new HashMap<String,Integer>();
+	private Set<String> tables = new HashSet<String>();
 
 	public List<Table> getVertices() {
 		return vertices;
@@ -25,13 +25,14 @@ public class TableMapping {
 	public void setVertices(List<Table> vertices) {
 		this.vertices = vertices;
 	}
-
-	public Set<Edge> getEdges() {
-		return edges;
+	
+	@JsonIgnore
+	public Set<String> getTables() {
+		return tables;
 	}
 
-	public void setEdges(Set<Edge> edges) {
-		this.edges = edges;
+	public void setTables(Set<String> tables) {
+		this.tables = tables;
 	}
 
 	public List<DetailedEdgeInfo> getDetailedEdgeInfoList() {
@@ -55,18 +56,6 @@ public class TableMapping {
 	public int generateUniqueId(){
 		return ThreadLocalRandom.current().nextInt(0, 10000);
 		
-	}
-
-	@JsonIgnore
-	public List<String> getTableNames() {
-		Set<String> tableNames = new HashSet<String>();
-		for (Edge path : edges){ 
-			if(path.getOut()!=null && !path.getOut().isEmpty())
-				tableNames.add(path.getOut());
-			if(path.getIn()!=null && !path.getIn().isEmpty())
-				tableNames.add(path.getIn());
-		}
-		return new ArrayList<String>(tableNames);
 	}
 
 }
