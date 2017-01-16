@@ -7,7 +7,6 @@ var OrientGraph = (function () {
 
   var graph = {};
   var copiedText = "";
-  var clipboard = "";
 
   function OGraph(elem, config, metadata, menuActions, edgeActions) {
 
@@ -785,7 +784,13 @@ var OrientGraph = (function () {
         .on("click", function (e) {
           d3.event.stopPropagation();
     	 copiedText = setJoinQuery(e.edge,e.graph.vertices);
+         var clipboard = new Clipboard('.pointer', {
+             text: function() {
+                 return copiedText;
+             }
+         }); 
     	 clipboard.onClick(d3.event);
+    	 clipboard.destroy();
     	 if (self.topics['edge/click']) {
            self.topics['edge/click'](e);
          }
@@ -810,13 +815,7 @@ var OrientGraph = (function () {
         })
         .text(function (e) {
           return setJoinQuery(e.edge,e.graph.vertices);
-        });
-     
-     clipboard = new Clipboard('.pointer', {
-         text: function() {
-             return copiedText;
-         }
-     });     
+        });    
  
       this.path.exit().remove();
 
