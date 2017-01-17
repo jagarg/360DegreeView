@@ -70,6 +70,7 @@ public class UserService {
 			for (String path : data)
 				if (path != null && !path.contains("NULL")) {
 					Edge newPath = new Edge();
+					DetailedEdgeInfo detailEdgeInfo = null;
 					String[] pathArr = path.toString().split(" ");
 					if (!pathArr[0].equalsIgnoreCase("NULL")){
 						newPath.setOut(pathArr[0]);
@@ -83,7 +84,15 @@ public class UserService {
 					}
 					if (!pathArr[3].equalsIgnoreCase("NULL"))
 						newPath.setTargetColumn(pathArr[3]);
-					newPath.setRid("#"+data.indexOf(path));
+					
+					if(tableMapping.getEdgeRid().get(pathArr[0]+pathArr[2])==null)
+						tableMapping.getEdgeRid().put(pathArr[0]+pathArr[2],tableMapping.generateUniqueId());
+					newPath.setRid("#"+tableMapping.getEdgeRid().get(pathArr[0]+pathArr[2]));
+					if(!pathArr[0].equalsIgnoreCase("NULL") && !pathArr[2].equalsIgnoreCase("NULL")){
+						detailEdgeInfo = new DetailedEdgeInfo(pathArr[0], pathArr[2]);
+						detailEdgeInfo.getEdges().add(newPath);
+						tableMapping.getDetailedEdgeInfoList().add(detailEdgeInfo);
+					}
 					
 				}
 		} else {
