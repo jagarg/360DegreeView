@@ -109,7 +109,7 @@
     </nav>
 
   <div class="container" ng-controller="GraphController as vm"><!-- ng-controller="DbTableListCtrl as vm" -->
-    <div ng-include src="'scripts/visualizer/dbTableListView.html'"></div>
+    <div ng-include src="'views/database/graph/dbTableListView.html'"></div>
   </div>
 
 
@@ -200,6 +200,7 @@
 <script src="scripts/api.js"></script>
 <script src="scripts/app.js"></script>
 <script src="scripts/module.js"></script>
+<script src="scripts/config.js"></script>
 <script src="scripts/clipboard.min.js"></script>
 <script src="scripts/jquery.bootstrap-duallistbox.js"></script> 
 <script src="scripts/bsDuallistbox.js"></script>
@@ -240,14 +241,12 @@
 <script src="scripts/vendor/jquery-cron-min.js"></script>
 
     <!-- Domain Classes -->
-    <script src="scripts/visualizer/database.js"></script>
 
     <!-- Services -->
     <script src="scripts/common/services/common.services.js"></script>
     <script src="scripts/common/services/dataAccessService.js"></script>
 
     <!-- Controllers -->
-    <script src="scripts/visualizer/dbTableListCtrl.js"></script>
 
 <!-- endbuild -->
 

@@ -351,7 +351,7 @@ GrapgController.controller("GraphController", ['$scope', '$routeParams', '$locat
           return v === 'Show Relations' ? 'Select Tables' : 'Show Relations';
       });
       if (this.toggle) {
-          var url = "http://localhost:8080/user/getmappings/" + this.selectedDB.dataModelName + "/" + this.selectedTables[0];
+          var url = ConfigOptions.baseURL + "user/getmappings/" + this.selectedDB.dataModelName + "/" + this.selectedTables[0];
           var len = this.selectedTables.length;
           if(len > 1){
               for(var i=1;i<len;i++){

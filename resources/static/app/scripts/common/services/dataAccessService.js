@@ -7,7 +7,7 @@ var app;
                 this.$resource = $resource;
             }
             DataAccessService.prototype.getDatabaseResource = function () {
-                return this.$resource("http://localhost:8080/user/listConfig");
+                return this.$resource(ConfigOptions.baseURL + "user/listConfig");
             };
             DataAccessService.prototype.getTableResource = function (url) {
                 return this.$resource(url);
